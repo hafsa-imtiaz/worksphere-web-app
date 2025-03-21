@@ -9,5 +9,19 @@ public class WorksphereApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(WorksphereApplication.class, args);
 	}
-
 }
+
+/*
+ - User
+ - Project
+ - ProjectMember
+ - Task
+TaskAttachment
+TaskActivityLog
+Notification
+TaskComment
+KanbanBoard
+KanbanColumn
+KanbanTask
+SystemLog
+ */
