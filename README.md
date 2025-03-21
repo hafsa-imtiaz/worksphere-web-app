@@ -46,7 +46,7 @@ WorkSphere aims to provide a centralized workspace for teams to organize tasks, 
 
 To download the project, use the following command:
 ```sh
- git clone https://github.com/your-repository-url.git
+ git clone https://github.com/hafsa-imtiaz/worksphere.git
  cd worksphere
 ```
 
