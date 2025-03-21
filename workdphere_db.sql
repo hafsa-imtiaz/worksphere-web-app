@@ -1,6 +1,6 @@
-drop database worksphere;
-CREATE database worksphere; 
-USE worksphere;
+drop database worksphere_db;
+CREATE database worksphere_db; 
+USE worksphere_db;
 
 CREATE TABLE users (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -10,9 +10,9 @@ CREATE TABLE users (
     password_hash   VARCHAR(255) NOT NULL,
     profile_picture VARCHAR(255) DEFAULT NULL, -- Stores the file path or URL
     dob             DATE DEFAULT NULL,
-    gender          ENUM('male', 'female', 'other') DEFAULT NULL,
+    gender          ENUM('MALE', 'FEMALE', 'OTHER') DEFAULT NULL,
     -- phone_number    VARCHAR(20) DEFAULT NULL UNIQUE,
-    role            ENUM('admin', 'user') NOT NULL DEFAULT 'user', -- Global system role
+    role            ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER', -- Global system role
     -- status          ENUM('active', 'inactive', 'banned') NOT NULL DEFAULT 'active',
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
