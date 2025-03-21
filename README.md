@@ -11,7 +11,6 @@ WorkSphere aims to provide a centralized workspace for teams to organize tasks, 
 - **Team Members** – Manage workloads, collaborate, and update task statuses.
 - **Freelancers & Remote Workers** – Organize tasks, set deadlines, and integrate with clients.
 - **Business Owners & Executives** – Gain insights into project progress through analytics.
-- **Clients** – Provide feedback or track progress on specific tasks.
 
 ## Features
 - **Task Management** – Create, assign, prioritize, and track tasks.
