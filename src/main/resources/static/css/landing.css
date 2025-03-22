@@ -1,0 +1,148 @@
+/* Gradient background */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: rgb(255, 255, 255);
+    background-size: 300% 300%;
+    animation: gradientAnimation 10s ease infinite;
+    color: rgb(0, 0, 0);
+    text-align: center;
+}
+
+
+/* Header styling */
+header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 50px;
+    background: #eeeef5;
+    backdrop-filter: blur(10px);
+}
+
+header h1 {
+    color: #3458eb;
+    margin: 0;
+    font-size: 28px;
+}
+
+/* Navigation */
+nav ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    padding: 0;
+    margin: 0;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: rgb(5, 5, 5);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.bttn {
+    background: #3458eb;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.bttn:hover {
+    background: #3458eb;
+    color: white;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 100px 50px;
+    text-align: left;
+}
+
+.hero-content {
+    flex: 1;
+    max-width: 50%;
+    text-align: center
+}
+
+.hero h2 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+/* Hero Image */
+.hero-image {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-image img {
+    max-width: 80%;
+    height: auto;
+    max-height: 90%;
+    border-radius: 10px;
+}
+/* Glowing Button */
+.btn {
+    background: #3b7beb;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: 0.3s;
+    box-shadow: 0px 4px 10px rgba(55, 0, 255, 0.5);
+}
+
+.btn:hover {
+    background: #3458eb;
+    color: white;
+}
+
+
+/* Feature Cards */
+.features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 50px 20px;
+}
+
+.feature-card {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    width: 250px;
+    backdrop-filter: blur(10px);
+    transition: 0.3s;
+    box-shadow: 0px 4px 10px rgba(55, 0, 255, 0.5);
+}
+
+.feature-card:hover {
+    transform: scale(1.05);
+}
+
+/* Footer */
+footer {
+    margin-top: 50px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+}

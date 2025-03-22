@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup Page</title>
+    <link rel="stylesheet" href="./css/signup.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Left Side (Welcome Section) -->
+        <div class="left">
+            <h2>Come join us!</h2>
+            <p>We are so excited to have you here. If you haven't already, create an account to get access to exclusive offers, rewards, and discounts.</p>
+            <a href="login.html" class="signin-link">Already have an account? Sign in.</a>
+        </div>
+
+        <!-- Right Side (Signup Form) -->
+        <div class="right">
+            <h2>Signup</h2>
+            <form id="signup-form">
+                <input type="text" id="firstName" placeholder="First Name" required>
+                <input type="text" id="lastName" placeholder="Last Name" required>
+                <input type="email" id="email" placeholder="Email" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <input type="date" id="dob" required>
+                <select id="gender">
+                    <option value="MALE">Male</option>
+                    <option value="FEMALE">Female</option>
+                    <option value="OTHER">Other</option>
+                </select>
+                <button type="submit">Signup</button>
+            </form>
+            
+        </div>
+    </div>
+    <script src="./js/signup.js"></script>
+</body>
+</html>
