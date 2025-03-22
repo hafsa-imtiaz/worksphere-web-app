@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {  // Wait for the DOM to load
+document.addEventListener("DOMContentLoaded", () => {  
     const loginForm = document.getElementById("login-form"); 
     const emailInput = document.getElementById("loginEmail"); 
     const passwordInput = document.getElementById("loginPassword"); 

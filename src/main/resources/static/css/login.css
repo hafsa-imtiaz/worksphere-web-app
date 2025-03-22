@@ -122,14 +122,13 @@ body {
     background: #094ec5;
 }
 
-/* Message Styling */
+
 #message {
     text-align: center;
     font-size: 16px;
     margin-top: 10px;
 }
 
-/* OR Text */
 .or {
     margin-top: 20px;
     font-size: 16px;
