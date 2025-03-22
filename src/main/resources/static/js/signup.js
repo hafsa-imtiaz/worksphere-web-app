@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("signup-form").addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault(); 
 
         // Collect user data from form inputs
         const userData = {
@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
             lastName: document.getElementById("lastName").value,
             email: document.getElementById("email").value,
             password: document.getElementById("password").value,
-            dob: document.getElementById("dob").value, // Ensure it's in YYYY-MM-DD format
-            gender: document.getElementById("gender").value.toUpperCase(), // Convert to uppercase for ENUM
+            dob: document.getElementById("dob").value, 
+            gender: document.getElementById("gender").value.toUpperCase(), 
         };
 
         try {
