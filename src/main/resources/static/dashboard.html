@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkSphere Dashboard</title>
+    <link rel="stylesheet" href="./css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <h2 class="logo">WorkSphere</h2>
+            <nav class="nav-links">
+                <ul class="top-menu">
+                    <li class="active">Dashboard</li>
+                    <li>Projects</li>
+                </ul>
+                <ul class="bottom-menu">
+                    <li>Profile</li>
+                    <li>Log Out</li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <h1>Dashboard</h1>
+                <div class="search-add">
+                    <input type="text" placeholder="Search...">
+                    <button class="add-task">+ Add Task</button>
+                </div>
+            </header>
+
+            <section class="dashboard-cards">
+                <div class="card">
+                    <img src="./images/projects.png" class="card-icon" alt="Project Icon">
+                    <h3>10+ Projects</h3>
+                </div>
+                <div class="card">
+                    <img src="./images/clients.png" class="card-icon" alt="Client Icon">
+                    <h3>10 Clients</h3>
+                </div>
+                <div class="progress-card">
+                    <h3>Overall Progress</h3>
+                    <div class="progress-circle">89%</div>
+                </div>
+            </section>
+
+            <section class="stats-section">
+                <div class="graph" style="flex: 1 100%;">
+                    <h3>Weekly Trends</h3>
+                    <canvas id="myChart"></canvas>
+                </div>
+                <div class="activities" style="flex: 1 100%;">
+                    <h3>Recent Activities</h3>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./js/dashboard.js"></script>
+</body>
+</html>
