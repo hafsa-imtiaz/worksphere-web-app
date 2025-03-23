@@ -1,0 +1,151 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background: #fff;
+  }
+  
+  .dashboard-container {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 180px;
+    background: #ffffff;
+    padding: 20px;
+    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .logo {
+    font-size: 22px;
+    font-weight: bold;
+    color: #1D38C1;
+    font-family: 'Book Antiquaa';
+  }
+  
+  .nav-links {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+  
+  .nav-links ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .nav-links ul li {
+    padding: 10px;
+    margin-top: 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #1D38C1;
+    font-weight: bold;
+    font-family: sans-serif;
+  }
+  
+  .nav-links ul .active {
+    background: #1D38C1;
+    color: white;
+    font-weight: bold;
+  }
+  
+  .main-content {
+    flex: 1;
+    padding: 30px;
+    background: #f9f9f9;
+  }
+  
+  .profile-header {
+    display: flex;
+    align-items: center;
+    color: #1D38C1;
+    margin-bottom: 20px;
+  }
+  
+  .profile-header h1 {
+    font-size: 22px;
+    font-weight: bold;
+  }
+  
+  .profile-card {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+    padding-bottom: 30px;
+  }
+  
+  .profile-banner {
+    background: #1D38C1;
+    border-radius: 12px 12px 0 0;
+    padding: 40px 20px 20px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .profile-pic {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: -30px;
+  }
+  
+  .photo-buttons {
+    margin-top: 15px;
+  }
+  
+  .upload-btn,
+  .save-btn {
+    padding: 6px 12px;
+    border: none;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .upload-btn {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  .save-btn {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  .profile-info {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    padding-left: 30px;
+    padding-right: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .profile-info h3 {
+    color: #1D38C1;
+    margin-bottom: 15px;
+    font-size: 18px;
+  }
+  
+  .profile-info label {
+    font-weight: bold;
+    margin: 10px 0 5px;
+    font-size: 14px;
+  }
+  
+  .profile-info input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  
