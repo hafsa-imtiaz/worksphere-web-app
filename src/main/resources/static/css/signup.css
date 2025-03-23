@@ -21,7 +21,7 @@ body {
 /* Left Side */
 .left {
     width: 50%;
-    background: linear-gradient(to bottom, #3b7beb, #3399ff);
+    background: #3458eb;
     color: white;
     display: flex;
     flex-direction: column;
@@ -97,7 +97,7 @@ body {
 
 /* Button Styling */
 #signup-form button {
-    background: #3b7beb;
+    background: #3458eb;
     color: white;
     padding: 14px;
     border: none;
@@ -110,7 +110,7 @@ body {
 }
 
 #signup-form button:hover {
-    background: #094ec5;
+    background: #6c9cee;
 }
 
 /* Message Styling */
@@ -123,7 +123,7 @@ body {
 
 
 button {
-    background: #3b7beb;
+    background: #3458eb;
     color: white;
     padding: 14px;
     border: none;
@@ -136,7 +136,7 @@ button {
 }
 
 button:hover {
-    background: #011f53;
+    background: #5f92eb;
 }
 
 /* OR Text */

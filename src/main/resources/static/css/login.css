@@ -27,7 +27,7 @@ body {
 .left {
     width: 50%;
     height: 80%;
-    background: linear-gradient(to bottom, #3b7beb, #3399ff);
+    background: #3458eb;
     color: white;
     display: flex;
     flex-direction: column;
@@ -106,7 +106,7 @@ body {
 
 
 #login-form button {
-    background: #3b7beb;
+    background: #3458eb;
     color: white;
     padding: 16px;
     border: none;
@@ -119,7 +119,7 @@ body {
 }
 
 #login-form button:hover {
-    background: #094ec5;
+    background: #3874dc;
 }
 
 
