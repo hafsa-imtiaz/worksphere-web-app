@@ -1,4 +1,4 @@
-/* Global Styles */
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
@@ -10,7 +10,7 @@ body {
     height: 100vh;
 }
 
-/* Container */
+
 .container {
     width: 60%;   
     max-width: 1000px; 
@@ -23,7 +23,7 @@ body {
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Left Side */
+
 .left {
     width: 50%;
     height: 80%;
@@ -93,7 +93,7 @@ body {
     margin: auto;
 }
 
-/* Input Fields */
+
 #login-form input {
     width: 100%;
     padding: 16px;
@@ -104,7 +104,7 @@ body {
     box-sizing: border-box;
 }
 
-/* Button Styling */
+
 #login-form button {
     background: #3b7beb;
     color: white;
