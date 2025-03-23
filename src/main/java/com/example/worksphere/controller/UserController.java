@@ -1,6 +1,6 @@
 package com.example.worksphere.controller;
 
-
+import java.util.Collections;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,14 +52,19 @@ public class UserController {
 
     // LOGIN: Authenticate user
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<?> login(@RequestBody SignUpDto signUpDto) {
         try {
             // authenticate
             User user = userService.loginUser(
                 signUpDto.getEmail(),
                 signUpDto.getPassword()
             );
-            return new ResponseEntity<>("Login successful. Welcome " + user.getFirstName(), HttpStatus.OK);
+            if (user != null) {
+                return ResponseEntity.ok(user);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(Collections.singletonMap("message", "Invalid email or password"));
+            }
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
         }

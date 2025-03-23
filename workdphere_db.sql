@@ -2,6 +2,8 @@ drop database worksphere_db;
 CREATE database worksphere_db; 
 USE worksphere_db;
 
+
+
 CREATE TABLE users (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
     first_name      VARCHAR(50) NOT NULL,
@@ -145,3 +147,8 @@ CREATE TABLE system_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
+select * from users;
+-- Password admin123
+INSERT INTO users (first_name, last_name, email, password_hash, profile_picture, dob, gender, role)
+VALUES 
+('admin', 'admin', 'admin@worksphere.com', '$2a$10$gRPwOXWy.5vZRNTFt.46ceu3i7JKW6fnE5QA3Js2.8090TTblew1y', NULL, '2000-03-23', 'FEMALE', 'ADMIN');
