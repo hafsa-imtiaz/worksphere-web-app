@@ -1,0 +1,304 @@
+/* Reset box-sizing for better width predictability */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+body {
+  background-color: #f5f7fa; /* Neutral light background */
+  color: #333;
+  font-size: 16px;
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* Reset box-sizing for better width predictability */
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  background-color: #f8f9fa; 
+  color: #333;
+  width: 250px; 
+  height: 100vh;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1); /* Subtle neutral shadow */
+  z-index: 10;
+  overflow: hidden; 
+  box-sizing: border-box !important; /* Force border-box even if already set elsewhere */
+  transform: translateZ(0); /* Create stacking context for z-index */
+  -webkit-font-smoothing: antialiased; /* Improve text rendering */
+}
+
+/* Prevent sidebar width overrides */
+.sidebar[style*="width"] {
+  width: 250px !important; /* Override any inline styles */
+}
+
+/* Rest of your styles unchanged */
+.company-logo {
+  width: 100px;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.user-info {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.profile-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  border: 2px solid #6a11cb; /* Subtle purple border */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.profile-pic:hover {
+  transform: scale(1.1);
+}
+
+.user-name {
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sidebar-nav button {
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent; /* Neutral background initially */
+  border: 1px solid #e0e0e0;
+  color: #555;
+  text-align: left;
+  font-size: 14px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
+
+/* Selected button style */
+.sidebar-nav button.current-btn {
+  background-color: #f0f0ff; /* Very light purple background */
+  border-left: 4px solid #6a11cb; /* Purple accent on the left */
+  color: #6a11cb;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(106, 17, 203, 0.15);
+}
+
+.hrr {
+  margin-top: auto;
+  margin-bottom: 0px;
+}
+
+.sidebar-nav button.profile-btn {
+  margin-top: 8px;
+}
+
+/* All sidebar buttons hover effect (except logout) */
+.sidebar-nav button:not(#logout-btn):hover {
+  background: linear-gradient(to right, #f0f0ff, #fff);
+  color: #6a11cb;
+  transform: translateX(5px);
+  border-color: #d0d0ff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Special styling for logout button */
+.sidebar-nav button#logout-btn {
+  margin-top: 8px; /* Push to bottom */
+  margin-bottom: 0px;
+  background-color: #f8f0f0; /* Light reddish background */
+  border: 1px solid #ffdbdb;
+  color: #e91e63; /* Pink/red text */
+  transition: all 0.3s ease;
+}
+
+.sidebar-nav button#logout-btn:hover {
+  background-color: #e91e63;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(233, 30, 99, 0.25);
+}
+
+.sidebar-nav hr {
+  border: 0;
+  border-top: 1px solid #e0e0e0;
+  margin: 15px 0;
+  width: 100%;
+}
+
+.projects-section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.projects-section span {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+#add-project {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6a11cb;
+  color: white;
+  min-width: auto;
+  font-size: 16px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  border: none;
+}
+
+#add-project:hover {
+  transform: rotate(90deg);
+  box-shadow: 0 0 10px rgba(106, 17, 203, 0.3);
+}
+
+.projects-list {
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: #6a11cb #f0f0f0;
+}
+
+.projects-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.projects-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+  border-radius: 10px;
+}
+
+.projects-list::-webkit-scrollbar-thumb {
+  background-color: #6a11cb;
+  border-radius: 10px;
+}
+
+/* Sidebar toggle button */
+.menu-toggle {
+  display: none;
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #4A90E2;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  z-index: 1100;
+}
+
+/* Toast Container */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: auto;
+  min-width: 280px;
+  max-width: 350px;
+}
+
+/* Toast Style */
+.toast {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.4s ease, transform 0.4s ease-in-out;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 320px;
+  position: relative;
+}
+
+/* Show Toast Animation */
+.toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Success Toast */
+.toast.success {
+  background-color: #28a745;
+}
+
+/* Error Toast */
+.toast.error {
+  background-color: #dc3545;
+}
+
+/* Toast Icon */
+.toast-icon {
+  font-size: 1.3rem;
+  margin-right: 12px;
+}
+
+/* Toast Message */
+.toast-message {
+  flex-grow: 1;
+  padding-right: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Close Button */
+.toast-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.3s ease;
+}
+
+.toast-close:hover {
+  color: #f8f9fa;
+}
+  

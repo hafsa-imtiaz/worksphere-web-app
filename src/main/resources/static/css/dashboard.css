@@ -5,59 +5,15 @@ body {
 }
 
 .dashboard-container {
+    margin-left: 250px;
     display: flex;
     height: 100vh;
-}
-
-.sidebar {
-    width: 180px;
-    background: #ffffff;
-    padding: 20px;
-    box-shadow: 5px 0 15px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-}
-
-.logo {
-    font-size: 22px;
-    font-weight: bold;
-    color: #1D38C1;
-    font-family: 'Book Antiquaa';
-}
-
-.nav-links {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-}
-
-.nav-links ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.nav-links ul li {
-    padding: 10px;
-    margin-top: 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    color: #1D38C1;
-    font-weight: bold;
-    font-family: sans-serif;
-}
-
-.nav-links ul .active {
-    background: #1D38C1;
-    color: white;
-    font-family: sans-serif;
-    font-weight: bold;
 }
 
 .main-content {
     flex: 1;
     padding: 20px;
+    margin-left: 20px; 
 }
 
 .header {
@@ -161,4 +117,36 @@ body {
     flex: 1;
     border-radius: 10px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: flex; 
+    }
+    
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+    
+    .dashboard-container {
+        margin-left: 0px;
+        margin-top: 50px;
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        transition: margin 0.3s ease;
+    }
+    
+    .dashboard-cards,
+    .stats-section {
+        flex-direction: column;
+    }
 }

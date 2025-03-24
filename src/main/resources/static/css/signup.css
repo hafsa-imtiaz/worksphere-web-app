@@ -16,6 +16,7 @@ body {
     border-radius: 12px; /* Slightly increased border-radius for a smoother look */
     overflow: hidden;
     box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+    height: 85vh; /* Prevents unnecessary vertical scrolling */
 }
 
 /* Left Side */
@@ -55,22 +56,24 @@ body {
 /* Right Side */
 .right {
     width: 50%;
-    padding: 50px; /* Increased padding */
+    padding: 50px;
     text-align: center;
+    overflow-y: auto; /* Enable vertical scrolling for the right section */
+    max-height: 100vh; /* Prevent it from exceeding the viewport height */
 }
 
 .right h2 {
     font-size: 26px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
+    margin-top: 0px;
 }
 
-/* Form Styling */
 #signup-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
     width: 100%;
-    max-width: 400px; 
+    max-width: 450px; 
     margin: auto;
 }
 
@@ -86,7 +89,6 @@ body {
     box-sizing: border-box; 
 }
 
-
 #signup-form select {
     appearance: none;
     background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="black"><path d="M5 7l5 5 5-5H5z"/></svg>') no-repeat right 12px center;
@@ -101,11 +103,11 @@ body {
     color: white;
     padding: 14px;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 18px;
     cursor: pointer;
     font-weight: bold;
-    margin-top: 10px;
+    margin-top: 15px;
     transition: background 0.3s ease-in-out;
 }
 
@@ -119,8 +121,6 @@ body {
     font-size: 16px;
     margin-top: 10px;
 }
-
-
 
 button {
     background: #3458eb;
@@ -144,4 +144,38 @@ button:hover {
     margin-top: 20px;
     font-size: 16px;
     color: #666;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        height: auto; /* Allow sections to expand naturally */
+        width: 90%; /* Slightly wider for small screens */
+    }
+
+    .left, .right {
+        width: 100%;
+    }
+
+    .left {
+        padding: 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .right {
+        padding: 40px;
+        max-height: none;
+        overflow: hidden;
+    }
+
+    #signup-form {
+        max-height: none;
+        overflow-y: visible;
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Ensure spacing between form elements */
+    }
 }
