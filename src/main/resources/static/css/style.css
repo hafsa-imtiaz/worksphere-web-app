@@ -135,7 +135,7 @@ body {
 /* Special styling for logout button */
 .sidebar-nav button#logout-btn {
   margin-top: auto; /* Push to bottom */
-  margin-bottom: 0px;
+  margin-bottom: 4px;
   background-color: #f8f0f0; /* Light reddish background */
   border: 1px solid #ffdbdb;
   color: #e91e63; /* Pink/red text */
