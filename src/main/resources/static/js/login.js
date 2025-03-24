@@ -82,7 +82,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (response.ok) {
                 const user = await response.json(); 
+                console.log(user);
                 localStorage.setItem("loggedInUser", user.email);
+                localStorage.setItem("UserFName", user.firstName);
+                localStorage.setItem("UserLName", user.lastName);
+                localStorage.setItem("loggedInUserID", user.id);
                 form.reset();
                 showToast("Login successful! Redirecting...", "success");
 

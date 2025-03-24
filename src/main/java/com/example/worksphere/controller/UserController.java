@@ -1,14 +1,20 @@
 package com.example.worksphere.controller;
 
+import java.io.IOException;
 import java.util.Collections;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.worksphere.dto.SignUpDto;
+import com.example.worksphere.dto.UpdateProfileDto;
 import com.example.worksphere.entity.User;
 import com.example.worksphere.service.UserService;
 
@@ -48,8 +54,6 @@ public class UserController {
         }
     }
 
-
-
     // LOGIN: Authenticate user
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody SignUpDto signUpDto) {
@@ -67,6 +71,33 @@ public class UserController {
             }
         } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping("/{userId}/profile")
+    public ResponseEntity<?> updateUserProfile(
+            @PathVariable Long userId,
+            @RequestBody UpdateProfileDto request) {
+
+        try {
+            User updatedUser = userService.updateUserProfile(userId, request);
+            return ResponseEntity.ok(updatedUser);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Collections.singletonMap("message", e.getMessage()));
+        }
+    }
+
+
+    @PostMapping("/{userId}/profile-picture")
+    public ResponseEntity<User> updateProfilePicture(
+            @PathVariable Long userId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            User updatedUser = userService.updateProfilePicture(userId, file);
+            return ResponseEntity.ok(updatedUser);
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(null);
         }
     }
 

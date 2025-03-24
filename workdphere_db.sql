@@ -16,6 +16,7 @@ CREATE TABLE users (
     -- phone_number    VARCHAR(20) DEFAULT NULL UNIQUE,
     role            ENUM('ADMIN', 'USER') NOT NULL DEFAULT 'USER', -- Global system role
     -- status          ENUM('active', 'inactive', 'banned') NOT NULL DEFAULT 'active',
+    bio             varchar(512) DEFAULT NULL,
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -147,8 +148,9 @@ CREATE TABLE system_logs (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
-select * from users;
+
 -- Password admin123
 INSERT INTO users (first_name, last_name, email, password_hash, profile_picture, dob, gender, role)
 VALUES 
 ('admin', 'admin', 'admin@worksphere.com', '$2a$10$gRPwOXWy.5vZRNTFt.46ceu3i7JKW6fnE5QA3Js2.8090TTblew1y', NULL, '2000-03-23', 'FEMALE', 'ADMIN');
+select * from users;
