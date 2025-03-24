@@ -28,7 +28,7 @@ public class ProjectMember {
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false, columnDefinition = "ENUM('project_manager', 'team_member', 'guest')")
+    @Column(name = "role", nullable = false, columnDefinition = "ENUM('project_manager', 'team_member', 'spectator')")
     private Role role = Role.TEAM_MEMBER;
 
     @Builder.Default
@@ -45,9 +45,9 @@ public class ProjectMember {
     }
 
     public enum Role {
-        PROJECT_MANAGER,
+        project_manager,
         TEAM_MEMBER,
-        GUEST
+        SPECTATOR
     }
 
     public enum Status {

@@ -10,7 +10,7 @@ import com.example.worksphere.dto.UpdateProfileDto;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.*;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.nio.file.Path;
@@ -121,4 +121,9 @@ public class UserService {
         user.setProfilePicture(fileName);
         return userRepository.save(user);
     }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+    
 }

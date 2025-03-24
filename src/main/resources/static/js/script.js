@@ -52,10 +52,10 @@ async function setupSidebarProfilePicture() {
         const userData = await response.json();
         const profilePicPath = userData.profilePicture; // Assuming this field stores the image path
 
-        sidebarPfp.src = profilePicPath ? profilePicPath : "./images/default-pfp.jpg"; // Update profile picture
+        sidebarPfp.src = profilePicPath ? profilePicPath : "./images/my-pfp.jpg"; // Update profile picture
     } catch (error) {
         console.error("Error fetching sidebar profile picture:", error);
-        sidebarPfp.src = "./images/default-pfp.jpg"; // Fallback to default on error
+        sidebarPfp.src = "./images/my-pfp.jpg"; // Fallback to default on error
     }
 }
 

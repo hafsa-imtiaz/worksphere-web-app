@@ -1,7 +1,10 @@
 package com.example.worksphere.service;
 
+import com.example.worksphere.dto.ProjectDTO;
 import com.example.worksphere.entity.Project;
+import com.example.worksphere.entity.User;
 import com.example.worksphere.repository.ProjectRepository;
+import com.example.worksphere.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,9 +14,11 @@ import java.util.Optional;
 public class ProjectService {
 
     private final ProjectRepository projectRepository;
+    private final UserRepository userRepository; // Needed to fetch User by ownerId
 
-    public ProjectService(ProjectRepository projectRepository) {
+    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
         this.projectRepository = projectRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Project> getAllProjects() {
@@ -28,20 +33,39 @@ public class ProjectService {
         return projectRepository.findByOwnerId(ownerId);
     }
 
-    public Project createProject(Project project) {
+    public Project createProject(ProjectDTO projectDTO) {
+        User owner = userRepository.findById(projectDTO.getOwnerId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Project project = Project.builder()
+                .name(projectDTO.getName())
+                .description(projectDTO.getDescription())
+                .owner(owner)
+                .status(projectDTO.getStatus())
+                .visibility(projectDTO.getVisibility())
+                .progress(projectDTO.getProgress())
+                .startDate(projectDTO.getStartDate())
+                .endDate(projectDTO.getEndDate())
+                .build();
+
         return projectRepository.save(project);
     }
 
-    public Project updateProject(Long id, Project updatedProject) {
+    public Project updateProject(Long id, ProjectDTO projectDTO) {
         return projectRepository.findById(id)
                 .map(existingProject -> {
-                    existingProject.setName(updatedProject.getName());
-                    existingProject.setDescription(updatedProject.getDescription());
-                    existingProject.setStatus(updatedProject.getStatus());
-                    existingProject.setVisibility(updatedProject.getVisibility());
-                    existingProject.setProgress(updatedProject.getProgress());
-                    existingProject.setStartDate(updatedProject.getStartDate());
-                    existingProject.setEndDate(updatedProject.getEndDate());
+                    User owner = userRepository.findById(projectDTO.getOwnerId())
+                            .orElseThrow(() -> new RuntimeException("User not found"));
+
+                    existingProject.setName(projectDTO.getName());
+                    existingProject.setDescription(projectDTO.getDescription());
+                    existingProject.setOwner(owner);
+                    existingProject.setStatus(projectDTO.getStatus());
+                    existingProject.setVisibility(projectDTO.getVisibility());
+                    existingProject.setProgress(projectDTO.getProgress());
+                    existingProject.setStartDate(projectDTO.getStartDate());
+                    existingProject.setEndDate(projectDTO.getEndDate());
+
                     return projectRepository.save(existingProject);
                 })
                 .orElseThrow(() -> new RuntimeException("Project not found"));

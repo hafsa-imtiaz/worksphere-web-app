@@ -158,5 +158,14 @@ public class UserController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<?> getAllUsers() {
+        try {
+            return ResponseEntity.ok(userService.getAllUsers());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(Collections.singletonMap("message", "Error retrieving users"));
+        }
+    }
 
 }

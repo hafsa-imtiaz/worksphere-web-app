@@ -2,8 +2,6 @@ drop database worksphere_db;
 CREATE database worksphere_db; 
 USE worksphere_db;
 
-
-
 CREATE TABLE users (
     id              BIGINT AUTO_INCREMENT PRIMARY KEY,
     first_name      VARCHAR(50) NOT NULL,
@@ -27,7 +25,7 @@ CREATE TABLE projects (
     description    TEXT DEFAULT NULL,
     owner_id       BIGINT NOT NULL,  -- The user who created the project
     status         ENUM('not_started', 'in_progress', 'completed', 'on_hold', 'cancelled') NOT NULL DEFAULT 'not_started',
-    visibility     ENUM('private', 'public') NOT NULL DEFAULT 'private', -- Private = invite-only, Public = visible to all
+    visibility     ENUM('PRIVATE', 'PUBLIC') NOT NULL DEFAULT 'PRIVATE', -- Private = invite-only, Public = visible to all
     progress       TINYINT UNSIGNED DEFAULT 0 CHECK (progress BETWEEN 0 AND 100), 
     start_date     DATE DEFAULT NULL,
     end_date       DATE DEFAULT NULL,
@@ -40,8 +38,8 @@ CREATE TABLE project_members (
     id           BIGINT AUTO_INCREMENT PRIMARY KEY,
     project_id   BIGINT NOT NULL,
     user_id      BIGINT NOT NULL,
-    role         ENUM('project_manager', 'team_member', 'guest') NOT NULL DEFAULT 'team_member',
-    status      ENUM('active', 'invited', 'removed', 'left') NOT NULL DEFAULT 'active',
+    role         ENUM('project_manager', 'team_member', 'spectator') NOT NULL DEFAULT 'team_member',
+    status       ENUM('active', 'invited', 'removed', 'left') NOT NULL DEFAULT 'active',
     joined_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
@@ -54,7 +52,7 @@ CREATE TABLE tasks (
     assigned_to  BIGINT NULL,  -- Can be unassigned initially
     title        VARCHAR(255) NOT NULL,
     description  TEXT NULL,
-    status       ENUM('pending', 'in_progress', 'completed', 'on_hold', 'canceled') NOT NULL DEFAULT 'pending',
+    status       ENUM('not_started', 'pending', 'in_progress', 'completed', 'on_hold', 'canceled') NOT NULL DEFAULT 'pending',
     priority     ENUM('low', 'medium', 'high', 'critical') NOT NULL DEFAULT 'medium',
     deadline     DATE DEFAULT NULL,
     created_by     BIGINT NOT NULL,
@@ -154,3 +152,4 @@ INSERT INTO users (first_name, last_name, email, password_hash, profile_picture,
 VALUES 
 ('admin', 'admin', 'admin@worksphere.com', '$2a$10$gRPwOXWy.5vZRNTFt.46ceu3i7JKW6fnE5QA3Js2.8090TTblew1y', NULL, '2000-03-23', 'FEMALE', 'ADMIN');
 select * from users;
+select * from projects;

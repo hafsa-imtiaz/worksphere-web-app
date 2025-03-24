@@ -20,13 +20,14 @@ document.addEventListener("DOMContentLoaded", function() {
     const biography = document.getElementById("bio");
 
     // update password-section
+    const choosePictureBtn = document.getElementById("choose-picture-btn");
     const newPasswordInput = document.getElementById("new-password");
     const confirmPasswordInput = document.getElementById("confirm-password");
     const updatePasswordButton = document.getElementById("update-password");
 
     // update pfp-section
     const profilePic = document.getElementById("profile-picture");
-    const fileInput = document.getElementById("new-picture");
+    const imageUpload = document.getElementById("image-upload");
     const PFPButton = document.getElementById("save-picture");
     let selectedFile = null;
 
@@ -122,15 +123,20 @@ document.addEventListener("DOMContentLoaded", function() {
     }
     updatePasswordButton.addEventListener("click", updateUserPassword);
 
+    choosePictureBtn.addEventListener("click", function () {
+        imageUpload.click(); // This will simulate a click on the hidden file input
+      });
     // Display selected image instantly before saving
-    fileInput.addEventListener("change", function () {
-        if (fileInput.files && fileInput.files[0]) {
+    imageUpload.addEventListener("change", function () {
+        if (imageUpload.files && imageUpload.files[0]) {
             const reader = new FileReader();
+    
             reader.onload = function (e) {
                 profilePic.src = e.target.result; // Show selected image immediately
             };
-            reader.readAsDataURL(fileInput.files[0]);
-            selectedFile = fileInput.files[0]; // Store the selected file for later upload
+    
+            reader.readAsDataURL(imageUpload.files[0]);
+            selectedFile = imageUpload.files[0]; // Store the selected file for later upload
         }
     });
 

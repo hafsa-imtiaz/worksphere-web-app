@@ -32,7 +32,7 @@ public class Project {
     @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, columnDefinition = "ENUM('not_started', 'in_progress', 'completed', 'on_hold', 'cancelled')")
-    private Status status = Status.NOT_STARTED;
+    private Status status = Status.not_started;
 
     @Builder.Default
     @Enumerated(EnumType.STRING)
@@ -66,15 +66,33 @@ public class Project {
     }
 
     public enum Status {
-        NOT_STARTED,
-        IN_PROGRESS,
-        COMPLETED,
-        ON_HOLD,
-        CANCELLED
+        not_started,
+        in_progress,
+        completed,
+        on_hold,
+        cancelled
     }
 
     public enum Visibility {
         PRIVATE,
         PUBLIC
     }
+
+    @Override
+    public String toString() {
+        return "Project{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", owner=" + owner.getId() + // Assuming 'User' has a getId() method to get the owner's ID
+                ", status=" + status +
+                ", visibility=" + visibility +
+                ", progress=" + progress +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
+
 }

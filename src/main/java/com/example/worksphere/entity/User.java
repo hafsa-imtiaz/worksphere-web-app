@@ -78,4 +78,23 @@ public class User {
     public String getBio() {  // Fixed getter naming
         return this.bio;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +  // Avoid printing passwords in production; this is for debugging purposes
+                ", profilePicture='" + profilePicture + '\'' +
+                ", dob=" + dob +
+                ", gender=" + gender +
+                ", bio='" + bio + '\'' +
+                ", role=" + role +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                '}';
+    }
+
 }
