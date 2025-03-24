@@ -187,7 +187,7 @@ function addNewProject() {
 
 function sidebartoggling() {
     const menuToggle = document.querySelector(".menu-toggle");
-    const sidebar = document.querySelector(".sidebar"); // Changed to querySelector for class
+    const sidebar = document.querySelector(".sidebar"); 
     const container = document.querySelector(".container");
 
     menuToggle.addEventListener("click", function() {
