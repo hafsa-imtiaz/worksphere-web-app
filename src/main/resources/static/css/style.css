@@ -10,7 +10,6 @@ body {
   background-color: #f5f7fa; /* Neutral light background */
   color: #333;
   font-size: 16px;
-  line-height: 1.5;
   min-height: 100vh;
 }
 
@@ -54,18 +53,26 @@ body {
 
 .user-info {
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 }
 
 .profile-pic {
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   margin-bottom: 8px;
   border: 2px solid #6a11cb; /* Subtle purple border */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;
+  object-fit: cover;
 }
+
+.profile-pic img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
 
 .profile-pic:hover {
   transform: scale(1.1);
@@ -127,7 +134,7 @@ body {
 
 /* Special styling for logout button */
 .sidebar-nav button#logout-btn {
-  margin-top: 8px; /* Push to bottom */
+  margin-top: auto; /* Push to bottom */
   margin-bottom: 0px;
   background-color: #f8f0f0; /* Light reddish background */
   border: 1px solid #ffdbdb;
@@ -207,6 +214,19 @@ body {
 .projects-list::-webkit-scrollbar-thumb {
   background-color: #6a11cb;
   border-radius: 10px;
+}
+
+button {
+  border: none;
+  color: #fff;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
 }
 
 /* Sidebar toggle button */

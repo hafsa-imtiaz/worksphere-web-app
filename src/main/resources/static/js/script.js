@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", function() {
     setUpUserName();
+    setupSidebarProfilePicture();
 
     setupDashboardButton();
     setupTasksButton();
@@ -33,6 +34,31 @@ function setUpUserName(){
         naam.textContent = fullName; 
     }
 }
+
+async function setupSidebarProfilePicture() {
+    const userId = localStorage.getItem("loggedInUserID") || "";
+    const API_URL = "http://localhost:8080/api/users";
+    const sidebarPfp = document.getElementById("sidebar-pfp");
+
+    if (!userId) {
+        console.error("User ID not found. Sidebar PFP update skipped.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/${userId}`);
+        if (!response.ok) throw new Error("Failed to fetch user data");
+
+        const userData = await response.json();
+        const profilePicPath = userData.profilePicture; // Assuming this field stores the image path
+
+        sidebarPfp.src = profilePicPath ? profilePicPath : "./images/default-pfp.jpg"; // Update profile picture
+    } catch (error) {
+        console.error("Error fetching sidebar profile picture:", error);
+        sidebarPfp.src = "./images/default-pfp.jpg"; // Fallback to default on error
+    }
+}
+
 
 function setupDashboardButton() {
     const dashboardBtn = document.getElementById("dashboard-btn");

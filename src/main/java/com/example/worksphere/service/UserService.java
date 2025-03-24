@@ -60,6 +60,21 @@ public class UserService {
         return user; 
     }
 
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public void saveUser(User user) {
+        if (!user.getPassword().startsWith("$2a$")) { // Prevent double hashing
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        userRepository.save(user);
+    }    
+
     @Transactional
     public User updateUserProfile(Long userId, UpdateProfileDto request) {
         User user = userRepository.findById(userId)
