@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project | WorkSphere</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/project.css">
+</head>
+<body>
+
+    <!-- Sidebar (Reusing your existing sidebar) -->
+    <button class="menu-toggle">☰</button>
+    <div class="sidebar">
+        <div class="user-info">
+            <img id="sidebar-pfp" src="./images/my-pfp.jpg" alt="Profile Picture" class="profile-pic">
+            <p class="user-name">John Doe</p>
+        </div>
+        <nav class="sidebar-nav">
+            <button id="dashboard-btn" class="current-btn">Dashboard</button>
+            <button id="tasks-btn">My Tasks</button>
+            <button id="calendar-btn">Calendar</button>
+            <button id="inbox-btn">Inbox</button>
+            <hr>
+            <div class="projects-section">
+                <span>My Projects<button id="add-project">+</button></span>
+                <div class="projects-list" id="projects-list">
+                    <button class="project-btn" data-project-id="1">Project 1</button>
+                    <button class="project-btn" data-project-id="2">Project 2</button>
+                </div>
+            </div>
+            <hr>
+            <button id="profile-btn" class="profile-btn">Profile</button>
+            <button id="logout-btn" class="logout-btn">Logout</button>
+        </nav>
+    </div>
+
+    <!-- Project Dashboard Layout -->
+    <div class="project-container">
+        <!-- Partition 2: Banner -->
+        <div class="banner">Project Dashboard</div>
+
+        <!-- Partition 3: Project Details -->
+        <div class="project-details">
+            <div class="project-header">
+                <h2>Project Name <span class="status">Ongoing</span></h2>
+                <button class="edit-btn">✏️ Edit</button>
+                </div>
+            <p id="project-description">Here will be project description.</p>            
+        </div>
+
+        <!-- Partition 4: Public/Private Options -->
+        <div class="visibility">
+            <h3>Visibility</h3>
+            <div class="privacy-options">
+                <label><input type="radio" name="visibility" value="public" checked> Public</label>
+                <label><input type="radio" name="visibility" value="private"> Private</label>
+            </div>
+            <div class="members">
+                <div class="members-header">
+                    <h3>Members</h3>
+                    <button id="add-member">+</button>
+                </div>
+                <ul id="members-list">
+                    <li><img src="./images/my-pfp.jpg" alt="Member 1"> Member 1</li>
+                    <li><img src="./images/my-pfp.jpg" alt="Member 2"> Member 2</li>
+                    <li><img src="./images/my-pfp.jpg" alt="Member 3"> Member 3</li>
+                    <li><img src="./images/my-pfp.jpg" alt="Member 3"> Member 3</li>
+                </ul>
+            </div>
+
+        </div>
+
+        <!-- Partition 5, 6, 7: Kanban Board -->
+        <div class="kanban">
+            <div class="kanban-column">
+                <h3>All Tasks</h3>
+                <ul id="all-tasks"></ul>
+            </div>
+            <div class="kanban-column">
+                <h3>Ongoing Tasks</h3>
+                <ul id="ongoing-tasks"></ul>
+            </div>
+            <div class="kanban-column">
+                <h3>Completed</h3>
+                <ul id="completed-tasks"></ul>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="./js/project.js"></script>
+    <script src="./js/script.js"></script>
+</body>
+</html>
