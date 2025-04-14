@@ -4,39 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inbox | WorkSphere</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="./css/sidebar.css">
     <link rel="stylesheet" href="./css/inbox.css">
 </head>
 <body>
-
-    <button class="menu-toggle">☰</button>
-    <div class="sidebar">
-        <!--<img src="./images/logo.png" alt="Company Logo" class="company-logo">-->
-        <div class="user-info">
-            <img id="sidebar-pfp" src="./images/my-pfp.jpg" alt="Profile Picture" class="profile-pic">
-            <p class="user-name">John Doe</p>
-        </div>
-        <nav class="sidebar-nav">
-            <button id="dashboard-btn">Dashboard</button>
-            <button id="tasks-btn">My Tasks</button>
-            <button id="calendar-btn">Calendar</button>
-            <button id="inbox-btn" class="current-btn">Inbox</button>
-            <hr>
-            <div class="projects-section">
-                <span>My Projects<button id="add-project">+</button></span>
-                <div class="projects-list" id="projects-list">
-                    <button class="project-btn" data-project-id="1">Project 1</button>
-                    <button class="project-btn" data-project-id="2">Project 2</button>
-                    <button class="project-btn" data-project-id="3">Project 3</button>
-                    <button class="project-btn" data-project-id="4">Project 3</button>
-                </div>
-            </div>
-            <hr class="hrrr">
-            <button id="profile-btn" class="profile-btn">Profile</button>
-            <button id="logout-btn" class="logout-btn">Logout</button>
-        </nav>
-    </div>
-
-    <script src="./js/script.js"></script>
+    <div id="sidebar-container"></div>
+    <script src="./js/sidebar.js"></script>
 </body>
 </html>

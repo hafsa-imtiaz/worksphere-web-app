@@ -9,57 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Function to create a toast notification
-    function showToast(message, type) {
-        const toastContainer = document.getElementById("toast-container") || createToastContainer();
-        const toast = document.createElement("div");
-        toast.classList.add("toast", type);
-        toast.setAttribute("role", "alert");
-
-        // Toast icon
-        const icon = document.createElement("span");
-        icon.classList.add("toast-icon");
-        icon.innerHTML = type === "success" ? "✔️" : "❌";
-
-        // Message container
-        const messageContainer = document.createElement("div");
-        messageContainer.classList.add("toast-message");
-        messageContainer.textContent = message;
-
-        // Close button
-        const closeButton = document.createElement("button");
-        closeButton.classList.add("toast-close");
-        closeButton.innerHTML = "&times;";
-        closeButton.setAttribute("aria-label", "Close notification");
-        closeButton.addEventListener("click", () => {
-            toast.classList.remove("show");
-            setTimeout(() => toast.remove(), 300);
-        });
-
-        // Append elements
-        toast.appendChild(icon);
-        toast.appendChild(messageContainer);
-        toast.appendChild(closeButton);
-        toastContainer.appendChild(toast);
-
-        // Show the toast
-        setTimeout(() => toast.classList.add("show"), 50);
-
-        // Auto-remove after 4 seconds
-        setTimeout(() => {
-            toast.classList.remove("show");
-            setTimeout(() => toast.remove(), 300);
-        }, 4000);
-    }
-
-    // Function to create toast container if it doesn't exist
-    function createToastContainer() {
-        const container = document.createElement("div");
-        container.id = "toast-container";
-        document.body.appendChild(container);
-        return container;
-    }
-
     // Handle form submission
     loginForm.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -69,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const password = passwordInput.value.trim();
 
         if (!email || !password) {
-            showToast("Please fill in all fields.", "error");
+            showToast("error", "Error", "Please fill in all fields.");
             return;
         }
 
@@ -88,19 +37,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem("UserLName", user.lastName);
                 localStorage.setItem("loggedInUserID", user.id);
                 form.reset();
-                showToast("Login successful! Redirecting...", "success");
+                showToast("success", "Login Succesful!", "Redirecting to your Dashboard.");
 
                 setTimeout(() => {
-                    window.location.href = user.userType === "ADMIN" ? "AdminPanel.html" : "../dashboard.html";
+                    window.location.href = user.userType === "ADMIN" ? "../AdminPanel.html" : "../dashboard.html";
                 }, 2000);
+
             } else {
                 const errorData = await response.json();
                 console.log(errorData);
-                showToast("Log-In failed. " + errorData.error + "Please try again.", 'error');
+                showToast("error", "Login Failed", "Invalid Credentials. Try Again Later");
             }
         } catch (error) {
             console.error(error);
-            showToast("Server error. Please try again later.", "error");
+            showToast("error", "Login Failed", "Server error. Try Again Later");
         }
     });
 });

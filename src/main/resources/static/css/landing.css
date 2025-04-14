@@ -10,7 +10,7 @@
 body {
     font-family: 'Inter', sans-serif;
     color: #333;
-    background-color: #F1FAEE;
+    background-color: #F0F0F5; /* Light silver-gray */
     line-height: 1.6;
 }
 
@@ -30,7 +30,7 @@ header {
 .logo {
     font-size: 1.8rem;
     font-weight: 600;
-    color: #4A90E2;
+    color: #6C5CE7; /* Purple */
     text-decoration: none;
 }
 
@@ -48,7 +48,7 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: #4A90E2;
+    color: #6C5CE7;
 }
 
 /* Buttons */
@@ -61,23 +61,23 @@ nav ul li a:hover {
 }
 
 .bttn {
-    color: #4A90E2;
-    border: 2px solid #4A90E2;
+    color: #6C5CE7;
+    border: 2px solid #6C5CE7;
     background: transparent;
 }
 
 .bttn:hover {
-    background: #4A90E2;
+    background: #6C5CE7;
     color: white;
 }
 
 .btn {
-    background: #4A90E2;
+    background: #6C5CE7;
     color: white;
 }
 
 .btn:hover {
-    background: #357ABD;
+    background: #4A3EBB; /* Darker Purple */
 }
 
 /* ----- HERO SECTION ----- */
@@ -96,7 +96,7 @@ nav ul li a:hover {
 
 .hero-content h2 {
     font-size: 2.5rem;
-    color: #1D3557;
+    color: #1B1B1B; /* Dark Black */
 }
 
 .hero-content p {
@@ -120,7 +120,7 @@ nav ul li a:hover {
 
 .features h2 {
     font-size: 2.2rem;
-    color: #1D3557;
+    color: #1B1B1B;
     margin-bottom: 40px;
 }
 
@@ -131,7 +131,7 @@ nav ul li a:hover {
 }
 
 .feature-card {
-    background: #F1FAEE;
+    background: #E5E5F7; /* Soft Silver-Purple */
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
@@ -144,7 +144,7 @@ nav ul li a:hover {
 
 .feature-card h3 {
     font-size: 1.4rem;
-    color: #4A90E2;
+    color: #6C5CE7;
 }
 
 .feature-card p {
@@ -157,7 +157,7 @@ nav ul li a:hover {
 footer {
     padding: 20px 10%;
     text-align: center;
-    background: #1D3557;
+    background: #1B1B1B;
     color: white;
 }
 
@@ -176,7 +176,7 @@ footer ul li a {
 }
 
 footer ul li a:hover {
-    color: #4A90E2;
+    color: #6C5CE7;
 }
 
 /* ----- RESPONSIVE DESIGN ----- */
@@ -200,7 +200,7 @@ footer ul li a:hover {
     background: none;
     border: none;
     cursor: pointer;
-    color: #4A90E2;
+    color: #6C5CE7;
     position: absolute;
     right: 20px;
     top: 15px;

@@ -1,33 +1,44 @@
+/* Updated Styles with Purple and Silver Color Palette */
+:root {
+    --primary-purple: #6a5acd;     /* Soft Slate Blue */
+    --secondary-purple: #5a4aa3;   /* Deeper Purple */
+    --background-light: #f5f3ff;   /* Very soft lavender background */
+    --white: #ffffff;
+    --text-dark: #2c2c3f;          /* Deep, muted navy-purple */
+    --border-light: #e6e0f2;       /* Soft, muted lavender border */
+    --silver-accent: #c0c0c0;      /* Silver accent */
+}
+
 body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background: #f5f5f5;
+    background: var(--background-light);
     display: flex;
     justify-content: center;
     align-items: center;
-    min-height: 100vh; /* Ensures spacing */
+    min-height: 100vh;
     box-sizing: border-box;
+    color: var(--text-dark);
 }
 
 .container {
     width: 60%;
     max-width: 1000px;
-    background-color: white;
+    background: var(--white);
     border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    margin: 50px auto; /* Adds spacing from top and bottom */
+    box-shadow: 0px 4px 10px rgba(106, 90, 205, 0.1);
+    margin: 50px auto;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* Ensure left and right fit properly */
 .left {
     width: 65%;
     height: 100%;
-    background: #3458eb;
-    color: white;
+    background: var(--primary-purple);
+    color: var(--white);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,9 +50,8 @@ body {
     border-bottom-left-radius: 10px;
 }
 
-
 .left h2 {
-    font-size: 28px; 
+    font-size: 28px;
     margin-bottom: 16px;
 }
 
@@ -51,12 +61,12 @@ body {
 }
 
 .left img {
-    width: 100%; 
+    width: 100%;
     max-width: 350px;
     height: auto;
-    margin-top: 20px; 
-    border-radius: 10px; 
-    object-fit: cover; 
+    margin-top: 20px;
+    border-radius: 10px;
+    object-fit: cover;
 }
 
 .signin-link {
@@ -66,51 +76,53 @@ body {
     border-radius: 25px;
     margin-top: 20px;
     text-decoration: none;
-    color: white;
+    color: var(--white);
     font-weight: bold;
 }
 
-/* Right Side */
 .right {
     width: 50%;
-    padding: 60px; 
+    padding: 60px;
     text-align: center;
 }
 
 .right h2 {
     font-size: 28px;
     margin-bottom: 30px;
+    color: var(--primary-purple);
 }
 
-.forgot-link{
-    color: #666;
+.forgot-link {
+    color: var(--text-dark);
 }
 
-/* Form Styling */
 #login-form {
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 100%;
-    max-width: 450px; 
+    max-width: 450px;
     margin: auto;
 }
-
 
 #login-form input {
     width: 100%;
     padding: 16px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border-light);
     border-radius: 8px;
     font-size: 16px;
-    background: white;
+    background: var(--white);
     box-sizing: border-box;
 }
 
+#login-form input:focus {
+    border-color: var(--primary-purple);
+    box-shadow: 0 0 0 3px rgba(106, 90, 205, 0.1);
+}
 
 #login-form button {
-    background: #3458eb;
-    color: white;
+    background: var(--primary-purple);
+    color: var(--white);
     padding: 16px;
     border: none;
     border-radius: 8px;
@@ -122,9 +134,8 @@ body {
 }
 
 #login-form button:hover {
-    background: #3874dc;
+    background: var(--secondary-purple);
 }
-
 
 #message {
     text-align: center;
@@ -135,22 +146,22 @@ body {
 .or {
     margin-top: 20px;
     font-size: 16px;
-    color: #666;
+    color: var(--text-dark);
 }
 
 @media (max-width: 768px) {
     .container {
-        flex-direction: column; /* Stack elements vertically */
-        width: 90%; /* Make it more fluid on small screens */
-        height: auto; /* Allow it to grow dynamically */
-        margin: 40px auto !important; /* Add margin to keep space around the box */
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+        margin: 40px auto !important;
     }
 
     .left {
         width: 100%;
-        height: auto; /* Adjust height to fit content */
-        border-radius: 10px 10px 0 0; /* Only top corners rounded */
-        padding: 40px; /* Reduce padding for smaller screens */
+        height: auto;
+        border-radius: 10px 10px 0 0;
+        padding: 40px;
     }
 
     .right {
@@ -158,83 +169,3 @@ body {
         padding: 40px;
     }
 }
-
-/* Toast Container */
-#toast-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 9999;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: auto;
-    min-width: 280px;
-    max-width: 350px;
-  }
-  
-  /* Toast Style */
-  .toast {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 14px 16px;
-    background-color: #333;
-    color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    transform: translateX(100%);
-    transition: opacity 0.4s ease, transform 0.4s ease-in-out;
-    font-size: 1rem;
-    width: 100%;
-    max-width: 320px;
-    position: relative;
-  }
-  
-  /* Show Toast Animation */
-  .toast.show {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  
-  /* Success Toast */
-  .toast.success {
-    background-color: #28a745;
-  }
-  
-  /* Error Toast */
-  .toast.error {
-    background-color: #dc3545;
-  }
-  
-  /* Toast Icon */
-  .toast-icon {
-    font-size: 1.3rem;
-    margin-right: 12px;
-  }
-  
-  /* Toast Message */
-  .toast-message {
-    flex-grow: 1;
-    padding-right: 10px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Close Button */
-  .toast-close {
-    background: none;
-    border: none;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    padding: 4px;
-    transition: color 0.3s ease;
-  }
-  
-  .toast-close:hover {
-    color: #f8f9fa;
-  }
-    

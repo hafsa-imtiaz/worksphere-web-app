@@ -3,78 +3,239 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard | WorkSphere</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <title>Dashboard - WorkSphere</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="./css/sidebar.css">
+    <link rel="stylesheet" href="./css/toast.css">
     <link rel="stylesheet" href="./css/dashboard.css">
 </head>
 <body>
-    <button class="menu-toggle">☰</button>
-    <div class="sidebar">
-        <!--<img src="./images/logo.png" alt="Company Logo" class="company-logo">-->
-        <div class="user-info">
-            <img id="sidebar-pfp" src="./images/my-pfp.jpg" alt="Profile Picture" class="profile-pic">
-            <p class="user-name">John Doe</p>
-        </div>
-        <nav class="sidebar-nav">
-            <button id="dashboard-btn" class="current-btn" >Dashboard</button>
-            <button id="tasks-btn">My Tasks</button>
-            <button id="calendar-btn">Calendar</button>
-            <button id="inbox-btn">Inbox</button>
-            <hr>
-            <div class="projects-section">
-                <span>My Projects<button id="add-project">+</button></span>
-                <div class="projects-list" id="projects-list">
-                    <button class="project-btn" data-project-id="1">Project 1</button>
-                    <button class="project-btn" data-project-id="2">Project 2</button>
-                    <button class="project-btn" data-project-id="3">Project 3</button>
-                    <button class="project-btn" data-project-id="4">Project 4</button>
-                </div>
-            </div>
-            <hr class="hrrr">
-            <button id="profile-btn" class="profile-btn">Profile</button>
-            <button id="logout-btn" class="logout-btn">Logout</button>
-        </nav>
-    </div>
-
-    <div class="dashboard-container">
-        <main class="main-content">
+    <div id="sidebar-container"></div>
+    <div id="toast-container"></div> 
+        
+    <!-- Main application container -->
+    <div class="app-container">       
+        <!-- Main content area -->
+        <div class="main-content">
+            <!-- Top header with search and user info -->
             <header class="header">
-                <h1>Dashboard</h1>
-                <div class="search-add">
-                    <input type="text" placeholder="Search...">
-                    <button class="add-task">+ Add Task</button>
+                <div class="search-container">
+                    <div class="icon">
+                        <i class="fas fa-search"></i> <!-- Font Awesome search icon -->
+                    </div>
+                    <input type="text" placeholder="Search task">
+                </div>
+            
+                <div class="header-actions">
+                    <button class="export-btn">
+                        <i class="fas fa-columns"></i> <!-- Font Awesome grid icon -->
+                        <span>Analytics</span>
+                    </button>
+            
+                    <div class="icon-btn">
+                        <div class="notification-badge"></div>
+                        <i class="fas fa-bell"></i> <!-- Font Awesome bell icon -->
+                    </div>
+            
+                    <div class="icon-btn">
+                        <i class="fas fa-user-cog"></i> <!-- Profile settings icon -->
+                    </div>
+                                            
                 </div>
             </header>
+            
+            
+            <!-- Main content grid layout -->
+            <main class="content-area">
+                <!-- Left column -->
+                <section class="left-column">
+                    <!-- Welcome banner -->
+                    <div class="welcome-banner">
+                        <div class="welcome-text">
+                            <h1 id="dash-message" class="welcome-title">Welcome Back</h1>
+                            <p class="welcome-subtitle">You have 6 Task for today</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Upcoming tasks section -->
+                    <section class="upcoming-tasks">
+                        <div class="section-header">
+                            <h2 class="section-title">Up next</h2>
+                        </div>
+                    
+                        <div class="task-card">
+                            <h3 class="task-card-title">Design Team Meeting - Discuss new project wireframes</h3>
+                            <div class="task-card-time">
+                                <div class="icon">
+                                    <i class="fas fa-clock"></i> <!-- Font Awesome clock icon -->
+                                </div>
+                                <span>11:30 AM - 12:00 PM</span>
+                            </div>
+                        </div>
+                    
+                        <div class="task-card">
+                            <h3 class="task-card-title">Client Meeting - Review project updates and seek approval</h3>
+                            <div class="task-card-time">
+                                <div class="icon">
+                                    <i class="fas fa-clock"></i> <!-- Font Awesome clock icon -->
+                                </div>
+                                <span>01:00 PM - 02:00 PM</span>
+                            </div>
+                        </div>
+                    </section>
 
-            <section class="dashboard-cards">
-                <div class="card">
-                    <img src="./images/projects.png" class="card-icon" alt="Project Icon">
-                    <h3>10+ Projects</h3>
-                </div>
-                <div class="card">
-                    <img src="./images/clients.png" class="card-icon" alt="Client Icon">
-                    <h3>10 Clients</h3>
-                </div>
-                <div class="progress-card">
-                    <h3>Overall Progress</h3>
-                    <div class="progress-circle">89%</div>
-                </div>
-            </section>
+                    <!-- Task input section -->
+                    <section class="task-input">
+                        <div class="input-row">
+                            <div class="task-checkbox"></div>
+                            <input type="text" placeholder="Add task for today">
+                            <div class="input-actions">
+                                <i class="fas fa-search" style="color:#9CA3AF;"></i> <!-- Font Awesome search icon -->
+                            </div>
+                        </div>
 
-            <section class="stats-section">
-                <div class="graph" style="flex: 1 100%;">
-                    <h3>Weekly Trends</h3>
-                    <canvas id="myChart"></canvas>
-                </div>
-                <div class="activities" style="flex: 1 100%;">
-                    <h3>Recent Activities</h3>
-                </div>
-            </section>
-        </main>
+                        <div class="options-row">
+                            <button class="tag-selector">
+                                <div class="color-dot blue-dot"></div>
+                                <span>Inbox</span>
+                                <i class="fas fa-chevron-down"></i> <!-- Font Awesome down arrow icon -->
+                            </button>
+
+                            <div class="time-options">
+                                <div class="time-option active">
+                                    <div class="icon">
+                                        <i class="fas fa-clock"></i> <!-- Font Awesome clock icon -->
+                                    </div>
+                                    <span>Now</span>
+                                </div>
+
+                                <div class="time-option">
+                                    <div class="icon">
+                                        <i class="fas fa-calendar-day"></i> <!-- Font Awesome calendar day icon -->
+                                    </div>
+                                    <span>Tomorrow</span>
+                                </div>
+
+                                <div class="time-option">
+                                    <div class="icon">
+                                        <i class="fas fa-calendar-week"></i> <!-- Font Awesome calendar week icon -->
+                                    </div>
+                                    <span>Next week</span>
+                                </div>
+                            </div>
+
+                            <button class="custom-btn">Custom</button>
+                        </div>
+                    </section>
+
+                    
+                    <!-- Today's task list -->
+                    <section class="task-list">
+                        <h2 class="task-list-title">Today's task</h2>
+                        
+                        <div class="task-item">
+                            <div class="task-item-checkbox"></div>
+                            <div class="task-item-content">
+                                <div class="task-item-title">Cleaning up desk</div>
+                                <div class="task-item-tag">
+                                    <div class="color-dot blue-dot"></div>
+                                    <span>Inbox</span>
+                                </div>
+                            </div>
+                            <div class="task-item-time">
+                                08:20 AM
+                                <div class="icon">
+                                    <i class="fas fa-chevron-right"></i> <!-- Font Awesome right arrow icon -->
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="task-item">
+                            <div class="task-item-checkbox"></div>
+                            <div class="task-item-content">
+                                <div class="task-item-title">Client meeting prep</div>
+                                <div class="task-item-tag">
+                                    <div class="color-dot" style="background-color: #10B981;"></div>
+                                    <span>Work</span>
+                                </div>
+                            </div>
+                            <div class="task-item-time">
+                                10:20 AM
+                                <div class="icon">
+                                    <i class="fas fa-chevron-right"></i> <!-- Font Awesome right arrow icon -->
+                                </div>
+                            </div>
+                        </div>
+                    
+                        <div class="task-item">
+                            <div class="task-item-checkbox"></div>
+                            <div class="task-item-content">
+                                <div class="task-item-title">Small yoga</div>
+                                <div class="task-item-tag">
+                                    <div class="color-dot" style="background-color: #EF4444;"></div>
+                                    <span>Health</span>
+                                </div>
+                            </div>
+                            <div class="task-item-time">
+                                02:30 PM
+                                <div class="icon">
+                                    <i class="fas fa-chevron-right"></i> <!-- Font Awesome right arrow icon -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+                
+                <!-- Right column -->
+                <aside class="right-column">
+                    <!-- Calendar widget -->
+                    <section class="calendar">
+                        <div class="calendar-header">
+                            <h2 class="month-title">Calendar</h2>
+                        </div>
+                        <!-- Flatpickr calendar container -->
+                        <div id="calendar-container"></div>
+                    </section>
+                    
+                    <!-- Focus timer widget -->
+                    <!-- Focus timer widget -->
+                <section class="timer">
+                    <div class="timer-header">
+                        <h2 class="timer-title">Focus timer</h2>
+                        <div class="task-dropdown">
+                            <span>Task List</span>
+                            <i class="fas fa-chevron-down"></i> <!-- Font Awesome chevron down -->
+                        </div>
+                    </div>
+                    
+                    <div class="timer-display">
+                        <button class="timer-btn">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <div class="timer-value">30 mins</div>
+                        <button class="timer-btn">
+                            <i class="fas fa-plus"></i> 
+                        </button>
+                    </div>
+                    
+                    <button class="start-btn">
+                        <i class="fas fa-play"></i> 
+                        <span>Start</span>
+                    </button>
+                </section>
+                </aside>
+            </main>
+        </div>
     </div>
 
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="./js/dashboard.js"></script>
-    <script src="./js/script.js"></script>
+    <script src="./js/sidebar.js"></script>
+    <script src="./js/toast.js"></script>
 </body>
 </html>

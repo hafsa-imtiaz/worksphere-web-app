@@ -5,15 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup | WorkSphere</title>
     <link rel="stylesheet" href="./css/signup.css">
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/toast.css">
 </head>
 <body>
+    <div id="toast-container"></div>
     <div class="container">
         <!-- Left Side (Welcome Section) -->
         <div class="left">
             <h2>Come join us!</h2>
             <p>We are so excited to have you here. If you haven't already, create an account to get access to exclusive offers, rewards, and discounts.</p>
-            <a href="login.html" class="signin-link">Already have an account? Sign in.</a>
+            <button onclick="window.location.href='login.html'" class="signin-button">
+                Already have an account? Sign in.
+            </button>            
         </div>
 
         <!-- Right Side (Signup Form) -->
@@ -36,6 +39,7 @@
             
         </div>
     </div>
+    <script src="./js/toast.js"></script>
     <script src="./js/signup.js"></script>
 </body>
 </html>

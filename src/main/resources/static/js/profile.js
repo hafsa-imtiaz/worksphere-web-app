@@ -3,8 +3,10 @@ document.addEventListener("DOMContentLoaded", function() {
     const userEmail = localStorage.getItem("loggedInUser") || "";
 
     if (!userId) {
-        console.error("User ID not found. Redirecting to login...");
-        window.location.href = "login.html"; 
+        showToast("error", "User not found!", "Redirecting to login.");
+        setTimeout(() => {
+            // window.location.href = "login.html";
+        }, 2000);
         return;
     }
 

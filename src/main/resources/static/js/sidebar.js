@@ -1,4 +1,15 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
+    fetch("sidebar.html")
+        .then(response => response.text())
+        .then(data => {
+            document.getElementById("sidebar-container").innerHTML = data;
+            initializeSidebar();
+            highlightActiveButton();
+        })
+        .catch(error => console.error("Error loading sidebar:", error));
+});
+
+function initializeSidebar() {
     setUpUserName();
     setupSidebarProfilePicture();
 
@@ -15,7 +26,29 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Menu toggle functionality
     sidebartoggling();
-});
+}
+
+function highlightActiveButton() {
+    const currentPage = window.location.pathname.split("/").pop().replace(".html", ""); // Get current page filename without ".html"
+
+    const sidebarButtons = {
+        "dashboard": "dashboard-btn",
+        "mytasks": "tasks-btn",
+        "calendar": "calendar-btn",
+        "inbox": "inbox-btn",
+        "profile": "profile-btn"
+    };
+
+    // Remove 'current-btn' from all buttons
+    document.querySelectorAll(".sidebar-nav button").forEach(button => {
+        button.classList.remove("current-btn");
+    });
+
+    // Add 'current-btn' to the matching button
+    if (sidebarButtons[currentPage]) {
+        document.getElementById(sidebarButtons[currentPage]).classList.add("current-btn");
+    }
+}
 
 function capitalize(name) {
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
@@ -69,9 +102,6 @@ function setupDashboardButton() {
     }
 }
 
-/**
- * Sets up the My Tasks button
- */
 function setupTasksButton() {
     const tasksBtn = document.getElementById("tasks-btn");
     if (tasksBtn) {
@@ -81,9 +111,6 @@ function setupTasksButton() {
     }
 }
 
-/**
- * Sets up the Calendar button
- */
 function setupCalendarButton() {
     const calendarBtn = document.getElementById("calendar-btn");
     if (calendarBtn) {
@@ -93,9 +120,6 @@ function setupCalendarButton() {
     }
 }
 
-/**
- * Sets up the Inbox button
- */
 function setupInboxButton() {
     const inboxBtn = document.getElementById("inbox-btn");
     if (inboxBtn) {
@@ -105,9 +129,6 @@ function setupInboxButton() {
     }
 }
 
-/**
- * Sets up the Profile button
- */
 function setupProfileButton() {
     const profileBtn = document.getElementById("profile-btn");
     const pfpBtn = document.getElementById("sidebar-pfp");
@@ -123,9 +144,6 @@ function setupProfileButton() {
     }
 }
 
-/**
- * Sets up the Logout button
- */
 function setupLogoutButton() {
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) {
@@ -136,9 +154,6 @@ function setupLogoutButton() {
     }
 }
 
-/**
- * Sets up click handlers for all existing project buttons
- */
 function setupExistingProjectButtons() {
     const projectButtons = document.querySelectorAll(".project-btn");
     
@@ -150,9 +165,6 @@ function setupExistingProjectButtons() {
     });
 }
 
-/**
- * Sets up the add project button functionality
- */
 function setupAddProjectButton() {
     const addButton = document.getElementById("add-project");
     if (addButton) {
@@ -162,41 +174,45 @@ function setupAddProjectButton() {
     }
 }
 
-/**
- * Adds a new project button to the projects list
- */
 function addNewProject() {
     const projectList = document.getElementById("projects-list");
     if (projectList) {
-        const projectButtons = projectList.querySelectorAll(".project-btn");
-        const newProjectId = projectButtons.length + 1;
         
-        const newProject = document.createElement("button");
-        newProject.textContent = "New Project";
-        newProject.className = "project-btn";
-        newProject.setAttribute("data-project-id", newProjectId);
-        
-        newProject.addEventListener("click", function() {
-            window.location.href = `project.html?id=${newProjectId}`;
-        });
-        
-        projectList.appendChild(newProject);
     }
 }
 
-
 function sidebartoggling() {
-    const menuToggle = document.querySelector(".menu-toggle");
-    const sidebar = document.querySelector(".sidebar"); 
-    const container = document.querySelector(".container");
-
-    menuToggle.addEventListener("click", function() {
-        sidebar.classList.toggle("active");
-        container.classList.toggle("expanded");
-        if (sidebar.classList.contains("active")) {
-            menuToggle.classList.add("open");
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const btnTexts = document.querySelectorAll('.btn-text');
+    const icon = document.querySelector('.toggle-icon');
+ 
+    // Check if sidebar state is stored in localStorage
+    const sidebarCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+    
+    // Initialize sidebar state based on localStorage or default to expanded
+    if (sidebarCollapsed) {
+        sidebar.classList.add('collapsed');
+        toggleTextElements(false);
+    }
+    
+    // Toggle sidebar on button click
+    sidebarToggle.addEventListener('click', function() {
+        const isCollapsed = sidebar.classList.toggle('collapsed');
+        if (icon.innerHTML === 'chevron_left') {
+            icon.innerHTML = 'chevron_right';
         } else {
-            menuToggle.classList.remove("open");
+            icon.innerHTML = 'chevron_left'; 
         }
+        // Store sidebar state in localStorage
+        localStorage.setItem('sidebarCollapsed', isCollapsed);
+        toggleTextElements(!isCollapsed);
     });
+    
+    // Function to toggle text elements visibility
+    function toggleTextElements(show) {
+        btnTexts.forEach(function(textElement) {
+            textElement.style.display = show ? 'inline' : 'none';
+        });
+    } 
 }
