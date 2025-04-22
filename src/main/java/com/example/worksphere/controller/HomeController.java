@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "redirect:/landingPage.html";  // Redirects the root URL to front.html
+        return "redirect:/landingPage.html"; 
     }
 }
