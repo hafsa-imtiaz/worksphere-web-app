@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import '../css/dashboard.css';
-import '../css/toast.css';
 import { 
   Calendar, 
   Clock, 
@@ -19,13 +17,16 @@ import {
   AlertTriangle,
   Info
 } from 'lucide-react';
-import Sidebar from '../components/sidebar'; 
+import Sidebar from '../components/sidebar';
+import { useLocation } from 'react-router-dom';
+import styles from '../css/dashboard.module.css';
 
 const Dashboard = () => {
   // State variables
   const [timerMinutes, setTimerMinutes] = useState(30);
   const [timerRunning, setTimerRunning] = useState(false);
   const [remainingSeconds, setRemainingSeconds] = useState(30 * 60);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(localStorage.getItem('sidebarCollapsed') === 'true');
   const [tasks, setTasks] = useState([
     { 
       id: 1, 
@@ -87,6 +88,18 @@ const Dashboard = () => {
       firstName: capitalize(firstName),
       lastName: capitalize(lastName)
     });
+
+    // Listen for sidebar toggle events
+    const handleSidebarToggle = (event) => {
+      setSidebarCollapsed(event.detail.collapsed);
+    };
+
+    window.addEventListener('sidebarToggled', handleSidebarToggle);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('sidebarToggled', handleSidebarToggle);
+    };
   }, []);
 
   // Timer interval effect
@@ -204,20 +217,20 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className={styles.container}>
       {/* Sidebar Component */}
       <Sidebar />
       
       {/* Toast container */}
-      <div className="fixed top-4 right-4 z-50 flex flex-col space-y-2">
+      <div className={styles.toastContainer}>
         {toasts.map(toast => (
           <div 
             key={toast.id} 
-            className={`px-4 py-2 rounded shadow-lg flex items-center space-x-2 transition-all duration-300 transform translate-x-0 ${
-              toast.type === 'success' ? 'bg-green-500 text-white' : 
-              toast.type === 'error' ? 'bg-red-500 text-white' : 
-              toast.type === 'warning' ? 'bg-yellow-500 text-white' : 
-              'bg-blue-500 text-white'
+            className={`${styles.toast} ${
+              toast.type === 'success' ? styles.successToast : 
+              toast.type === 'error' ? styles.errorToast : 
+              toast.type === 'warning' ? styles.warningToast : 
+              styles.infoToast
             }`}
           >
             {toast.type === 'success' && <Check size={18} />}
@@ -230,66 +243,66 @@ const Dashboard = () => {
       </div>
       
       {/* Main application container */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className={`${styles.mainContent} ${sidebarCollapsed ? styles.mainContentExpanded : ''}`}>
         {/* Top header with search and user info */}
-        <header className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between shadow-sm">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+        <header className={styles.header}>
+          <div className={styles.searchContainer}>
+            <Search className={styles.searchIcon} size={18} />
             <input 
               type="text" 
               placeholder="Search tasks..." 
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64"
+              className={styles.searchInput}
             />
           </div>
           
-          <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">
+          <div className={styles.headerActions}>
+            <button className={styles.analyticsButton}>
               <Columns size={18} />
               <span>Analytics</span>
             </button>
             
-            <div className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full">
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
-              <Bell size={20} className="text-gray-600" />
+            <div className={styles.notificationIcon}>
+              <div className={styles.notificationDot}></div>
+              <Bell size={20} />
             </div>
             
-            <div className="cursor-pointer p-2 hover:bg-gray-100 rounded-full">
-              <User size={20} className="text-gray-600" />
+            <div className={styles.userIcon}>
+              <User size={20} />
             </div>
           </div>
         </header>
         
         {/* Main content area */}
-        <main className="flex-1 overflow-auto bg-gray-50 p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <main className={styles.mainArea}>
+          <div className={styles.dashboardGrid}>
             {/* Left column - 2/3 width */}
-            <div className="lg:col-span-2 space-y-6">
+            <div className={styles.leftColumn}>
               {/* Welcome banner */}
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-6 text-white shadow-md">
-                <h1 className="text-2xl font-semibold">Welcome Back, {user.firstName} {user.lastName}</h1>
-                <p className="opacity-90 mt-1">You have {tasks.filter(task => !task.completed).length} active tasks for today</p>
+              <div className={styles.welcomeBanner}>
+                <h1 className={styles.welcomeTitle}>Welcome Back, {user.firstName} {user.lastName}</h1>
+                <p className={styles.welcomeSubtitle}>You have {tasks.filter(task => !task.completed).length} active tasks for today</p>
               </div>
               
               {/* Upcoming tasks section */}
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
-                <h2 className="text-lg font-semibold mb-4 flex items-center">
-                  <Clock size={20} className="mr-2 text-blue-500" />
+              <div className={styles.widget}>
+                <h2 className={styles.widgetTitle}>
+                  <Clock size={20} className={styles.widgetIcon} />
                   <span>Up next</span>
                 </h2>
                 
-                <div className="space-y-4">
-                  <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-gray-50">
-                    <h3 className="font-medium text-gray-800">Design Team Meeting - Discuss new project wireframes</h3>
-                    <div className="flex items-center mt-2 text-gray-500">
-                      <Clock size={16} className="mr-2" />
+                <div className={styles.upcomingTasks}>
+                  <div className={`${styles.upcomingTask} ${styles.activeTask}`}>
+                    <h3 className={styles.taskTitle}>Design Team Meeting - Discuss new project wireframes</h3>
+                    <div className={styles.taskTime}>
+                      <Clock size={16} />
                       <span>11:30 AM - 12:00 PM</span>
                     </div>
                   </div>
                   
-                  <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-                    <h3 className="font-medium text-gray-800">Client Meeting - Review project updates and seek approval</h3>
-                    <div className="flex items-center mt-2 text-gray-500">
-                      <Clock size={16} className="mr-2" />
+                  <div className={styles.upcomingTask}>
+                    <h3 className={styles.taskTitle}>Client Meeting - Review project updates and seek approval</h3>
+                    <div className={styles.taskTime}>
+                      <Clock size={16} />
                       <span>01:00 PM - 02:00 PM</span>
                     </div>
                   </div>
@@ -297,93 +310,91 @@ const Dashboard = () => {
               </div>
               
               {/* Task input section */}
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
-                <div className="flex items-center">
-                  <div 
-                    className="w-5 h-5 border-2 border-gray-300 rounded-full mr-3 cursor-pointer hover:border-blue-500 transition-colors"
-                  ></div>
+              <div className={styles.widget}>
+                <div className={styles.taskInputContainer}>
+                  <div className={styles.taskCheckbox}></div>
                   
                   <input 
                     type="text" 
                     placeholder="Add task for today" 
-                    className="flex-1 py-2 focus:outline-none"
+                    className={styles.taskInput}
                     value={newTaskInput}
                     onChange={(e) => setNewTaskInput(e.target.value)}
                     onKeyPress={handleTaskInputKeyPress}
                   />
                   
-                  <Search size={18} className="text-gray-400" />
+                  <Search size={18} className={styles.taskInputIcon} />
                 </div>
                 
-                <div className="flex items-center justify-between mt-4">
-                  <button className="flex items-center space-x-2 px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
-                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                <div className={styles.taskInputActions}>
+                  <button className={styles.tagButton}>
+                    <div className={styles.tagDot}></div>
                     <span>Inbox</span>
                     <ChevronDown size={16} />
                   </button>
                   
-                  <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-1 px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">
+                  <div className={styles.timeOptions}>
+                    <div className={`${styles.timeOption} ${styles.activeTimeOption}`}>
                       <Clock size={16} />
                       <span>Now</span>
                     </div>
                     
-                    <div className="flex items-center space-x-1 px-3 py-1 text-gray-600 rounded-md hover:bg-gray-100 transition-colors">
+                    <div className={styles.timeOption}>
                       <Calendar size={16} />
                       <span>Tomorrow</span>
                     </div>
                     
-                    <div className="flex items-center space-x-1 px-3 py-1 text-gray-600 rounded-md hover:bg-gray-100 transition-colors">
+                    <div className={styles.timeOption}>
                       <Calendar size={16} />
                       <span>Next week</span>
                     </div>
                   </div>
                   
-                  <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
+                  <button className={styles.customButton}>
                     Custom
                   </button>
                 </div>
               </div>
               
               {/* Today's task list */}
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
-                <h2 className="text-lg font-semibold mb-4 flex items-center">
-                  <Check size={20} className="mr-2 text-green-500" />
+              <div className={styles.widget}>
+                <h2 className={styles.widgetTitle}>
+                  <Check size={20} className={styles.completedIcon} />
                   <span>Today's tasks</span>
                 </h2>
                 
-                <div className="space-y-3">
+                <div className={styles.taskList}>
                   {tasks.map(task => (
                     <div 
                       key={task.id} 
-                      className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors px-2 rounded-md"
+                      className={styles.taskItem}
                     >
-                      <div className="flex items-center">
+                      <div className={styles.taskDetails}>
                         <div 
-                          className={`w-5 h-5 border-2 ${task.completed ? 'bg-blue-500 border-blue-500' : 'border-gray-300'} rounded-full mr-3 cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-center`}
+                          className={`${styles.taskCheckbox} ${task.completed ? styles.taskCompleted : ''}`}
                           onClick={() => toggleTaskCompleted(task.id)}
                         >
-                          {task.completed && <Check size={12} className="text-white" />}
+                          {task.completed && <Check size={12} className={styles.checkIcon} />}
                         </div>
                         
                         <div>
-                          <div className={`font-medium ${task.completed ? 'line-through opacity-60' : ''}`}>
+                          <div className={`${styles.taskTitle} ${task.completed ? styles.taskTitleCompleted : ''}`}>
                             {task.title}
                           </div>
-                          <div className="flex items-center mt-1">
+                          <div className={styles.taskTag}>
                             <div 
-                              className="w-2 h-2 rounded-full mr-1" 
+                              className={styles.tagDot} 
                               style={{ backgroundColor: task.tagColor === 'blue' ? '#3B82F6' : task.tagColor }}
                             ></div>
-                            <span className="text-xs text-gray-500">{task.tag}</span>
+                            <span className={styles.tagName}>{task.tag}</span>
                           </div>
                         </div>
                       </div>
                       
-                      <div className="flex items-center text-gray-500 text-sm">
-                        <Clock size={14} className="mr-1" />
+                      <div className={styles.taskMeta}>
+                        <Clock size={14} />
                         {task.time}
-                        <ChevronRight size={16} className="ml-2" />
+                        <ChevronRight size={16} className={styles.taskArrow} />
                       </div>
                     </div>
                   ))}
@@ -392,18 +403,18 @@ const Dashboard = () => {
             </div>
             
             {/* Right column - 1/3 width */}
-            <div className="space-y-6">
+            <div className={styles.rightColumn}>
               {/* Calendar widget */}
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
-                <h2 className="text-lg font-semibold mb-4 flex items-center">
-                  <Calendar size={20} className="mr-2 text-blue-500" />
+              <div className={styles.widget}>
+                <h2 className={styles.widgetTitle}>
+                  <Calendar size={20} className={styles.calendarIcon} />
                   <span>Calendar</span>
                 </h2>
                 
                 {/* Calendar component would go here */}
-                <div className="bg-gray-50 rounded-lg p-4 text-center">
-                  <div className="text-sm text-gray-500">Calendar placeholder</div>
-                  <div className="mt-2 text-gray-800 font-medium">
+                <div className={styles.calendarPlaceholder}>
+                  <div className={styles.calendarInfo}>Calendar placeholder</div>
+                  <div className={styles.selectedDate}>
                     {selectedCalendarDate.toLocaleDateString('en-US', { 
                       weekday: 'long', 
                       year: 'numeric', 
@@ -415,43 +426,43 @@ const Dashboard = () => {
               </div>
               
               {/* Focus timer widget */}
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold flex items-center">
-                    <Clock size={20} className="mr-2 text-indigo-500" />
+              <div className={styles.widget}>
+                <div className={styles.timerHeader}>
+                  <h2 className={styles.widgetTitle}>
+                    <Clock size={20} className={styles.timerIcon} />
                     <span>Focus timer</span>
                   </h2>
-                  <div className="flex items-center text-gray-600 cursor-pointer hover:text-gray-800 transition-colors">
-                    <span className="mr-1">Task List</span>
+                  <div className={styles.timerList}>
+                    <span>Task List</span>
                     <ChevronDown size={16} />
                   </div>
                 </div>
                 
-                <div className="flex items-center justify-between mb-6">
+                <div className={styles.timerControls}>
                   <button 
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                    className={`${styles.timerButton} ${(timerRunning || timerMinutes <= 5) ? styles.timerButtonDisabled : ''}`}
                     onClick={decreaseTimer}
                     disabled={timerRunning || timerMinutes <= 5}
                   >
-                    <Minus size={20} className={timerRunning || timerMinutes <= 5 ? "text-gray-400" : "text-gray-700"} />
+                    <Minus size={20} />
                   </button>
                   
-                  <div className="text-2xl font-bold text-gray-800">{formatTimerDisplay()}</div>
+                  <div className={styles.timerDisplay}>{formatTimerDisplay()}</div>
                   
                   <button 
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+                    className={`${styles.timerButton} ${(timerRunning || timerMinutes >= 60) ? styles.timerButtonDisabled : ''}`}
                     onClick={increaseTimer}
                     disabled={timerRunning || timerMinutes >= 60}
                   >
-                    <Plus size={20} className={timerRunning || timerMinutes >= 60 ? "text-gray-400" : "text-gray-700"} />
+                    <Plus size={20} />
                   </button>
                 </div>
                 
                 <button 
-                  className={`w-full py-3 ${timerRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-lg flex items-center justify-center font-medium transition-colors`}
+                  className={`${styles.startButton} ${timerRunning ? styles.pauseButton : ''}`}
                   onClick={toggleTimer}
                 >
-                  {timerRunning ? <Pause size={18} className="mr-2" /> : <Play size={18} className="mr-2" />}
+                  {timerRunning ? <Pause size={18} /> : <Play size={18} />}
                   <span>{timerRunning ? 'Pause' : 'Start Focus'}</span>
                 </button>
               </div>

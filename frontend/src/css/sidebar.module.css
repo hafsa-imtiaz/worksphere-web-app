@@ -1,0 +1,345 @@
+/* Sidebar.module.css */
+
+/* Local variables - won't leak into other components */
+.sidebar {
+  --sidebar-width: 260px;
+  --sidebar-collapsed-width: 68px;
+  --sidebar-transition: 0.3s ease;
+  --sidebar-bg: #f8f9fa;
+  --sidebar-border: #e9ecef;
+  --sidebar-text: #212529;
+  --sidebar-icon: #6c757d;
+  --sidebar-hover: #e9ecef;
+  --sidebar-active: #dee2e6;
+  --sidebar-active-indicator: #0d6efd;
+  --sidebar-divider: #dee2e6;
+  --sidebar-shadow: rgba(0, 0, 0, 0.05);
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: var(--sidebar-width);
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  box-shadow: 2px 0 10px var(--sidebar-shadow);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--sidebar-transition);
+  z-index: 1000;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+/* Dark mode support without global selectors */
+.sidebar.darkMode {
+  --sidebar-bg: #212529;
+  --sidebar-border: #343a40;
+  --sidebar-text: #f8f9fa;
+  --sidebar-icon: #adb5bd;
+  --sidebar-hover: #343a40;
+  --sidebar-active: #495057;
+  --sidebar-divider: #343a40;
+  --sidebar-shadow: rgba(0, 0, 0, 0.2);
+}
+
+.sidebar.collapsed {
+  width: var(--sidebar-collapsed-width);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: var(--sidebar-icon);
+  border-radius: 10px;
+}
+
+/* Toggle Button */
+.toggleWrapper {
+  position: absolute;
+  top: 10px;
+  right: -12px;
+  z-index: 10;
+}
+
+.sidebarToggle {
+  width: 24px;
+  height: 24px;
+  background-color: var(--sidebar-active-indicator);
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.sidebarToggle:hover {
+  transform: scale(1.1);
+}
+
+.toggleIcon {
+  font-family: 'Material Icons Outlined';
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* User Information */
+.userInfo {
+  padding: 24px 16px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.profileImageWrapper {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-bottom: 8px;
+}
+
+.profilePic {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid var(--sidebar-active-indicator);
+  transition: transform 0.2s ease;
+}
+
+.profilePic:hover {
+  transform: scale(1.05);
+}
+
+.userName {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--sidebar-text);
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+/* Navigation */
+.sidebarNav {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  padding: 0 8px;
+}
+
+.navSection {
+  margin-bottom: 8px;
+}
+
+.navButton, 
+.projectButton, 
+.addButton,
+.logoutButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  background: transparent;
+  color: var(--sidebar-text);
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  text-align: left;
+  margin-bottom: 4px;
+  position: relative;
+}
+
+.navButton:hover, 
+.projectButton:hover, 
+.addButton:hover,
+.logoutButton:hover {
+  background-color: var(--sidebar-hover);
+}
+
+.navButton.active, 
+.projectButton.active, 
+.addButton.active {
+  background-color: var(--sidebar-active);
+  font-weight: 500;
+}
+
+.navButton.active:before, 
+.projectButton.active:before, 
+.addButton.active:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: var(--sidebar-active-indicator);
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.icon {
+  font-family: 'Material Icons Outlined';
+  font-size: 20px;
+  color: var(--sidebar-icon);
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.active .icon {
+  color: var(--sidebar-active-indicator);
+}
+
+.btnText {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity var(--sidebar-transition);
+}
+
+.collapsed .btnText {
+  display: none;
+}
+
+/* Projects Section */
+.projectsSection {
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+}
+
+.projectsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 12px;
+  margin-bottom: 4px;
+}
+
+.sectionTitle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--sidebar-icon);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.addButton {
+  padding: 6px;
+  width: auto;
+  margin-bottom: 0;
+}
+
+.projectsList {
+  display: flex;
+  flex-direction: column;
+  max-height: 30vh;
+  overflow-y: auto;
+  padding-right: 4px;
+  margin-bottom: 8px;
+}
+
+.projectsList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.projectsList::-webkit-scrollbar-thumb {
+  background-color: var(--sidebar-divider);
+  border-radius: 4px;
+}
+
+.projectButton {
+  font-size: 13px;
+}
+
+.loadingIndicator, 
+.errorMessage, 
+.noProjects {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  color: var(--sidebar-icon);
+  font-size: 13px;
+}
+
+.errorMessage {
+  color: #dc3545;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background-color: var(--sidebar-divider);
+  margin: 8px 8px 16px;
+}
+
+/* Bottom Section */
+.bottomSection {
+  margin-top: auto;
+  padding-bottom: 16px;
+}
+
+.logoutButton {
+  color: #dc3545;
+}
+
+.logoutButton .icon {
+  color: #dc3545;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(0);
+  }
+  
+  .sidebar.collapsed {
+    transform: translateX(calc(-1 * var(--sidebar-collapsed-width)));
+  }
+
+  .toggleWrapper {
+    right: -28px;
+  }
+  
+  .collapsed .toggleWrapper {
+    right: -12px;
+  }
+}
+
+/* Tooltip when sidebar is collapsed */
+.collapsed .navButton:hover::after,
+.collapsed .projectButton:hover::after,
+.collapsed .logoutButton:hover::after {
+  content: attr(aria-label);
+  position: absolute;
+  left: calc(100% + 8px);
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  z-index: 1000;
+}
