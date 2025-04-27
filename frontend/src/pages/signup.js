@@ -1,12 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom'; // Import both Link and useNavigate
-import '../css/signup.css';
-import '../css/toast.css';
+import styles from '../css/signup.module.css';
 
 const Signup = () => {
-  const navigate = useNavigate(); // Initialize useNavigate hook
-  
-  // State for form data
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -17,7 +12,6 @@ const Signup = () => {
     confirmPassword: ''
   });
 
-  // State for toast messages
   const [toast, setToast] = useState({
     visible: false,
     type: '',
@@ -26,11 +20,9 @@ const Signup = () => {
   });
 
   useEffect(() => {
-    // Remove logged in user data on component mount (equivalent to page load)
     localStorage.removeItem("loggedInUser");
   }, []);
 
-  // Handle input changes
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData(prevData => ({
@@ -39,7 +31,6 @@ const Signup = () => {
     }));
   };
 
-  // Show toast message
   const showToast = (type, title, message) => {
     setToast({
       visible: true,
@@ -48,34 +39,29 @@ const Signup = () => {
       message
     });
 
-    // Hide toast after 3 seconds
     setTimeout(() => {
       setToast(prev => ({ ...prev, visible: false }));
     }, 3000);
   };
 
-  // Handle sign in button click
-  const handleSignInClick = (e) => {
-    e.preventDefault();
-    navigate('/login'); // Navigate programmatically to login page
+  const goToLogin = () => {
+    window.location.href = '/login';
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      showToast("error", "Error", "Passwords do not match. Try again.");
+      showToast("error", "Error", "Passwords do not match");
       return;
     }
 
-    // Prepare user data without confirmPassword
     const userData = {
       firstName: formData.firstName,
       lastName: formData.lastName,
       email: formData.email,
       dob: formData.dob,
-      gender: formData.gender.toUpperCase(),
+      gender: formData.gender,
       password: formData.password
     };
 
@@ -89,127 +75,126 @@ const Signup = () => {
       });
 
       if (response.ok) {
-        showToast("success", "Signup Successful", "Welcome to WorkSphere. Redirecting to login page...");
-
-        // Reset form
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          dob: '',
-          gender: 'MALE',
-          password: '',
-          confirmPassword: ''
-        });
-
-        // Redirect to login page after 2 seconds
+        showToast("success", "Success!", "Account created successfully");
+        
         setTimeout(() => {
-          navigate('/login'); // Use navigate instead of window.location.href
+          window.location.href = '/login';
         }, 2000);
       } else {
         const errorData = await response.text();
-        showToast("error", "Signup Failed", "Error: " + errorData);
+        showToast("error", "Signup Failed", errorData);
       }
     } catch (error) {
-      console.error("Error:", error);
-      showToast("error", "Signup Failed", "Server error. Try Again Later");
+      showToast("error", "Error", "Server error. Please try again");
     }
   };
 
   return (
-    <div className="body-container">
-      {/* Toast Container */}
-      <div id="toast-container" className={toast.visible ? 'show' : ''}>
-        {toast.visible && (
-          <div className={`toast ${toast.type}`}>
-            <div className="toast-title">{toast.title}</div>
-            <div className="toast-message">{toast.message}</div>
-          </div>
-        )}
+    <div className={styles.page}>
+      <div className={`${styles.toast} ${styles[toast.type]} ${toast.visible ? styles.show : ''}`}>
+        <div className={styles.toastTitle}>{toast.title}</div>
+        <div>{toast.message}</div>
       </div>
 
-      <div className="container">
-        {/* Left Side (Welcome Section) */}
-        <div className="left">
+      <div className={styles.container}>
+        <div className={styles.left}>
           <h2>Come join us!</h2>
           <p>
-            We are so excited to have you here. If you haven't already, create an account
-            to get access to exclusive offers, rewards, and discounts.
+            We are excited to have you here. Create an account
+            to get access to exclusive offers and rewards.
           </p>
-
-          {/* Option 1: Direct button with onClick handler */}
           <button 
-            className="signin-button" 
-            onClick={handleSignInClick}
-            style={{ cursor: 'pointer' }}
+            onClick={goToLogin}
+            className={styles.signinButton}
           >
-            Already have an account? Sign in.
+            Already have an account? Sign in
           </button>
-          
-
         </div>
 
-        {/* Right Side (Signup Form) */}
-        <div className="right">
+        <div className={styles.right}>
           <h2>Signup</h2>
-          <form id="signup-form" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              id="firstName"
-              placeholder="First Name"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              id="lastName"
-              placeholder="Last Name"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.inputRow}>
+              <input
+                type="text"
+                id="firstName"
+                placeholder="First Name"
+                className={styles.input}
+                value={formData.firstName}
+                onChange={handleChange}
+                required
+              />
+              
+              <input
+                type="text"
+                id="lastName"
+                placeholder="Last Name"
+                className={styles.input}
+                value={formData.lastName}
+                onChange={handleChange}
+                required
+              />
+            </div>
+            
             <input
               type="email"
               id="email"
               placeholder="Email"
+              className={styles.input}
               value={formData.email}
               onChange={handleChange}
               required
             />
-            <input
-              type="date"
-              id="dob"
-              value={formData.dob}
-              onChange={handleChange}
-              required
-            />
-            <select
-              id="gender"
-              value={formData.gender}
-              onChange={handleChange}
-            >
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-              <option value="OTHER">Other</option>
-            </select>
+            
+            <div className={styles.inputRow}>
+              <input
+                type="date"
+                id="dob"
+                placeholder="Date of Birth"
+                className={styles.input}
+                value={formData.dob}
+                onChange={handleChange}
+                required
+              />
+              
+              <select
+                id="gender"
+                className={styles.select}
+                value={formData.gender}
+                onChange={handleChange}
+              >
+                <option value="MALE">Male</option>
+                <option value="FEMALE">Female</option>
+                <option value="OTHER">Other</option>
+              </select>
+            </div>
+            
             <input
               type="password"
               id="password"
               placeholder="Password"
+              className={styles.input}
               value={formData.password}
               onChange={handleChange}
               required
             />
+            
             <input
               type="password"
               id="confirmPassword"
               placeholder="Confirm Password"
+              className={styles.input}
               value={formData.confirmPassword}
               onChange={handleChange}
               required
             />
-            <button type="submit" style={{ cursor: 'pointer' }}>Signup</button>
+            
+            <button 
+              type="submit" 
+              className={styles.submitButton}
+            >
+              Signup
+            </button>
           </form>
         </div>
       </div>
