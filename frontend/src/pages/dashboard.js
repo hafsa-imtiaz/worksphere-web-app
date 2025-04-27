@@ -81,13 +81,16 @@ const Dashboard = () => {
         // Redirect to login page using react-router
         //window.location.href = "/login";
       }, 2000);
-      //return;
     }
 
     setUser({
       firstName: capitalize(firstName),
       lastName: capitalize(lastName)
     });
+
+    // Initial sidebar state
+    const initialSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
+    setSidebarCollapsed(initialSidebarState);
 
     // Listen for sidebar toggle events
     const handleSidebarToggle = (event) => {
@@ -123,6 +126,7 @@ const Dashboard = () => {
 
   // Helper functions
   const capitalize = (name) => {
+    if (!name) return '';
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
@@ -217,7 +221,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.appContainer}>
       {/* Sidebar Component */}
       <Sidebar />
       
@@ -243,7 +247,7 @@ const Dashboard = () => {
       </div>
       
       {/* Main application container */}
-      <div className={`${styles.mainContent} ${sidebarCollapsed ? styles.mainContentExpanded : ''}`}>
+      <div className={`${styles.mainContent} ${sidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
         {/* Top header with search and user info */}
         <header className={styles.header}>
           <div className={styles.searchContainer}>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import styles from '../css/sidebar.module.css';
 
-
 const Sidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -13,8 +12,6 @@ const Sidebar = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // No global document body modifications
-
   useEffect(() => {
     setUpUserName();
     setupSidebarProfilePicture();
@@ -126,7 +123,6 @@ const Sidebar = () => {
     localStorage.setItem('sidebarCollapsed', String(newCollapsedState));
     
     // Dispatch an event so other components can respond to sidebar change
-    // Instead of modifying global document state
     window.dispatchEvent(new CustomEvent('sidebarToggled', { 
       detail: { collapsed: newCollapsedState } 
     }));
@@ -155,7 +151,10 @@ const Sidebar = () => {
   );
 
   return (
-    <aside className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}>
+    <aside 
+      className={`${styles.sidebar} ${isCollapsed ? styles.collapsed : ''}`}
+      data-state={isCollapsed ? 'collapsed' : 'expanded'}
+    >
       <div className={styles.toggleWrapper}>
         <button 
           className={styles.sidebarToggle} 
