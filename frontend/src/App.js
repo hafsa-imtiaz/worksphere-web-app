@@ -5,10 +5,12 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import UserSettings from './pages/settings'; 
 import Dashboard from './pages/dashbaord';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />

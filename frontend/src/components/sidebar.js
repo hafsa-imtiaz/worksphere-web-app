@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../css/sidebar.css';
 
 const Sidebar = () => {
@@ -8,16 +8,18 @@ const Sidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem('sidebarCollapsed') === 'true');
   const [userName, setUserName] = useState('John Doe');
   const [profilePicture, setProfilePicture] = useState('./images/my-pfp.jpg');
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setUpUserName();
     setupSidebarProfilePicture();
-    highlightActiveButton();
-  }, [location.pathname]);
+    fetchUserProjects();
+  }, []);
 
-  const highlightActiveButton = () => {
+  const getCurrentActivePage = () => {
     const currentPage = location.pathname.split("/").pop().replace(".html", "");
-
+    
     const sidebarButtons = {
       "dashboard": "dashboard-btn",
       "mytasks": "tasks-btn",
@@ -30,22 +32,20 @@ const Sidebar = () => {
   };
 
   const capitalize = (name) => {
+    if (!name) return '';
     return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
   };
 
   const setUpUserName = () => {
-    let firstName = localStorage.getItem("UserFName") || "";
-    let lastName = localStorage.getItem("UserLName") || "";
-
-    firstName = capitalize(firstName);
-    lastName = capitalize(lastName);
-
-    let fullName = firstName + " " + lastName;
-    setUserName(fullName);
+    const firstName = capitalize(localStorage.getItem("UserFName") || "");
+    const lastName = capitalize(localStorage.getItem("UserLName") || "");
+    const fullName = `${firstName} ${lastName}`.trim();
+    
+    setUserName(fullName || 'John Doe');
   };
 
   const setupSidebarProfilePicture = async () => {
-    const userId = localStorage.getItem("loggedInUserID") || "";
+    const userId = localStorage.getItem("loggedInUserID");
     const API_URL = "http://localhost:8080/api/users";
 
     if (!userId) {
@@ -54,45 +54,104 @@ const Sidebar = () => {
     }
 
     try {
+      setIsLoading(true);
       const response = await fetch(`${API_URL}/${userId}`);
-      if (!response.ok) throw new Error("Failed to fetch user data");
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch user data: ${response.status}`);
+      }
 
       const userData = await response.json();
-      const profilePicPath = userData.profilePicture; // Assuming this field stores the image path
-
-      setProfilePicture(profilePicPath ? profilePicPath : "./images/my-pfp.jpg");
+      if (userData.profilePicture) {
+        setProfilePicture(userData.profilePicture);
+      }
     } catch (error) {
       console.error("Error fetching sidebar profile picture:", error);
-      setProfilePicture("./images/my-pfp.jpg"); // Fallback to default on error
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchUserProjects = async () => {
+    const userId = localStorage.getItem("loggedInUserID");
+    const API_URL = "http://localhost:8080/api/projects";
+
+    if (!userId) {
+      console.error("User ID not found. Projects fetch skipped.");
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_URL}/user/${userId}`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to fetch projects: ${response.status}`);
+      }
+
+      const projectsData = await response.json();
+      setProjects(projectsData || []);
+    } catch (error) {
+      console.error("Error fetching user projects:", error);
+      setProjects([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleLogout = () => {
+    // Clear all auth-related localStorage items
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("loggedInUserID");
+    localStorage.removeItem("UserFName");
+    localStorage.removeItem("UserLName");
+    localStorage.removeItem("userToken");
+    
+    // Redirect to login page
     navigate('/login');
   };
 
   const toggleSidebar = () => {
     const newCollapsedState = !isCollapsed;
     setIsCollapsed(newCollapsedState);
-    localStorage.setItem('sidebarCollapsed', newCollapsedState);
+    localStorage.setItem('sidebarCollapsed', String(newCollapsedState));
+    
+    // Dispatch an event so other components can respond to sidebar change
+    window.dispatchEvent(new CustomEvent('sidebarToggled', { 
+      detail: { collapsed: newCollapsedState } 
+    }));
   };
 
   const handleProjectClick = (projectId) => {
-    navigate(`/project?id=${projectId}`);
+    navigate(`/project/${projectId}`);
   };
 
   const addNewProject = () => {
-    // Implementation for adding a new project
-    console.log("Add new project functionality");
+    navigate('/new-project');
   };
 
-  const activeButton = highlightActiveButton();
+  const activeButton = getCurrentActivePage();
+
+  const NavButton = ({ id, icon, text, path }) => (
+    <button 
+      id={id} 
+      className={activeButton === id ? "current-btn" : ""}
+      onClick={() => navigate(path)}
+      aria-label={text}
+    >
+      <span className="material-icons-outlined">{icon}</span> 
+      {!isCollapsed && <span className="btn-text">{text}</span>}
+    </button>
+  );
 
   return (
     <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`} id="sidebar">
-      {/* Toggle button positioned absolutely */}
-      <button id="sidebar-toggle" className="sidebar-toggle" aria-label="Toggle sidebar" onClick={toggleSidebar}>
+      <button 
+        id="sidebar-toggle" 
+        className="sidebar-toggle" 
+        aria-label="Toggle sidebar" 
+        onClick={toggleSidebar}
+      >
         <span className="material-icons-outlined toggle-icon">
           {isCollapsed ? 'chevron_right' : 'chevron_left'}
         </span>
@@ -102,91 +161,68 @@ const Sidebar = () => {
         <img 
           id="sidebar-pfp" 
           src={profilePicture} 
-          alt="Profile Picture" 
+          alt={`${userName}'s profile`}
           className="profile-pic" 
           onClick={() => navigate('/profile')}
         />
-        <p className="user-name">{userName}</p>
+        {!isCollapsed && <p className="user-name">{userName}</p>}
       </div>
       
       <nav className="sidebar-nav">
-        <button 
-          id="dashboard-btn" 
-          className={activeButton === "dashboard-btn" ? "current-btn" : ""}
-          onClick={() => navigate('/dashboard')}
-        >
-          <span className="material-icons-outlined">dashboard</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Dashboard</span>
-        </button>
-        
-        <button 
-          id="tasks-btn" 
-          className={activeButton === "tasks-btn" ? "current-btn" : ""}
-          onClick={() => navigate('/mytasks')}
-        >
-          <span className="material-icons-outlined">checklist</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>My Tasks</span>
-        </button>
-        
-        <button 
-          id="calendar-btn" 
-          className={activeButton === "calendar-btn" ? "current-btn" : ""}
-          onClick={() => navigate('/calendar')}
-        >
-          <span className="material-icons-outlined">event</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Calendar</span>
-        </button>
-        
-        <button 
-          id="inbox-btn" 
-          className={activeButton === "inbox-btn" ? "current-btn" : ""}
-          onClick={() => navigate('/inbox')}
-        >
-          <span className="material-icons-outlined">mail</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Inbox</span>
-        </button>
+        <NavButton id="dashboard-btn" icon="dashboard" text="Dashboard" path="/dashboard" />
+        <NavButton id="tasks-btn" icon="checklist" text="My Tasks" path="/mytasks" />
+        <NavButton id="calendar-btn" icon="event" text="Calendar" path="/calendar" />
+        <NavButton id="inbox-btn" icon="mail" text="Inbox" path="/inbox" />
         
         <hr />
         
         <div className="projects-section">
-          <span>
-            <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>My Projects</span> 
-            <button id="add-project" onClick={addNewProject}>
-              <span className="material-icons-outlined" style={{ color: 'white' }}>add</span>
+          <div className="projects-header">
+            {!isCollapsed && <span className="btn-text">My Projects</span>}
+            <button 
+              id="add-project" 
+              onClick={addNewProject}
+              aria-label="Add new project"
+            >
+              <span className="material-icons-outlined">add</span>
             </button>
-          </span>
+          </div>
           
           <div className="projects-list" id="projects-list">
-            {[1, 2, 3, 4].map(projectId => (
-              <button 
-                key={projectId}
-                className="project-btn" 
-                onClick={() => handleProjectClick(projectId)}
-              >
-                <span className="material-icons-outlined">folder</span> 
-                <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>
-                  Project {projectId}
-                </span>
-              </button>
-            ))}
+            {isLoading ? (
+              <div className="loading-indicator">
+                <span className="material-icons-outlined">hourglass_empty</span>
+                {!isCollapsed && <span>Loading...</span>}
+              </div>
+            ) : projects.length > 0 ? (
+              projects.map(project => (
+                <button 
+                  key={project.id}
+                  className="project-btn" 
+                  onClick={() => handleProjectClick(project.id)}
+                  aria-label={`Open ${project.name}`}
+                >
+                  <span className="material-icons-outlined">folder</span>
+                  {!isCollapsed && <span className="btn-text">{project.name}</span>}
+                </button>
+              ))
+            ) : (
+              <div className="no-projects">
+                <span className="material-icons-outlined">folder_off</span>
+                {!isCollapsed && <span>No projects</span>}
+              </div>
+            )}
           </div>
         </div>
         
-        <hr className="hrrr" />
+        <hr />
         
         <div className="bottom-buttons">
-          <button 
-            id="profile-btn" 
-            className={`profile-btn ${activeButton === "profile-btn" ? "current-btn" : ""}`}
-            onClick={() => navigate('/profile')}
-          >
-            <span className="material-icons-outlined">person</span> 
-            <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Profile</span>
-          </button>
+          <NavButton id="profile-btn" icon="person" text="Profile" path="/profile" />
           
-          <button id="logout-btn" className="logout-btn" onClick={handleLogout}>
-            <span className="material-icons-outlined">logout</span> 
-            <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Logout</span>
+          <button id="logout-btn" className="logout-btn" onClick={handleLogout} aria-label="Logout">
+            <span className="material-icons-outlined">logout</span>
+            {!isCollapsed && <span className="btn-text">Logout</span>}
           </button>
         </div>        
       </nav>
