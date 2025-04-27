@@ -243,7 +243,7 @@ img {
 }
 
 .accentDark {
-  color:aquamarine;
+  color: var(--dark);
 }
 
 .heroTagline {
@@ -449,7 +449,6 @@ img {
 /* Features section */
 .features {
   padding: 6rem 2rem;
-  background-color: white;
 }
 
 .featuresContainer {
@@ -466,12 +465,12 @@ img {
 .sectionHeading h2 {
   font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #111827;
+  color:#050d1e; 
 }
 
 .sectionHeading p {
   font-size: 1.25rem;
-  color:#1f2937;
+  color:#050d1e;
 }
 
 .featuresGrid {
@@ -489,6 +488,7 @@ img {
   transition: var(--transition);
   overflow: hidden;
   z-index: 1;
+  background-color:var(--dark);
 }
 
 .featureCard:hover {
@@ -786,7 +786,7 @@ img {
 /* Pricing section */
 .pricing {
   padding: 6rem 2rem;
-  background-color: var(--light-gray);
+  background-color: var(--primary-light);
 }
 
 .pricingContainer {
@@ -952,7 +952,7 @@ img {
 
 /* Footer */
 .footer {
-  background-color: var(--dark);
+  background-color: #050d1e;
   color: white;
   padding: 6rem 2rem 2rem;
 }
