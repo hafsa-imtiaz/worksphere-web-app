@@ -13,7 +13,6 @@ import {
   Minus, 
   Columns, 
   Bell, 
-  Settings, 
   User,
   Check,
   AlertCircle,
@@ -76,9 +75,10 @@ const Dashboard = () => {
     const lastName = localStorage.getItem("UserLName") || "";
 
     if (!userId) {
-      showToast("Error", "User not found!\nRedirecting to login.", "error");
+      showToast("User not found! Redirecting to login.", "error");
       setTimeout(() => {
-        // window.location.href = "login.html";
+        // Redirect to login page using react-router
+        window.location.href = "/login";
       }, 2000);
       return;
     }
@@ -205,7 +205,7 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Sidebar */}
+      {/* Sidebar Component */}
       <Sidebar />
       
       {/* Toast container */}
@@ -220,10 +220,10 @@ const Dashboard = () => {
               'bg-blue-500 text-white'
             }`}
           >
-            {toast.type === 'success' && <div className="text-white"><Check size={18} /></div>}
-            {toast.type === 'error' && <div className="text-white"><AlertCircle size={18} /></div>}
-            {toast.type === 'warning' && <div className="text-white"><AlertTriangle size={18} /></div>}
-            {toast.type === 'info' && <div className="text-white"><Info size={18} /></div>}
+            {toast.type === 'success' && <Check size={18} />}
+            {toast.type === 'error' && <AlertCircle size={18} />}
+            {toast.type === 'warning' && <AlertTriangle size={18} />}
+            {toast.type === 'info' && <Info size={18} />}
             <div>{toast.message}</div>
           </div>
         ))}
@@ -232,28 +232,28 @@ const Dashboard = () => {
       {/* Main application container */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top header with search and user info */}
-        <header className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between">
+        <header className="bg-white border-b border-gray-200 py-4 px-6 flex items-center justify-between shadow-sm">
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
             <input 
               type="text" 
-              placeholder="Search task" 
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="Search tasks..." 
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 w-64"
             />
           </div>
           
           <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-md">
+            <button className="flex items-center space-x-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">
               <Columns size={18} />
               <span>Analytics</span>
             </button>
             
-            <div className="relative cursor-pointer">
+            <div className="relative cursor-pointer p-2 hover:bg-gray-100 rounded-full">
               <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
               <Bell size={20} className="text-gray-600" />
             </div>
             
-            <div className="cursor-pointer">
+            <div className="cursor-pointer p-2 hover:bg-gray-100 rounded-full">
               <User size={20} className="text-gray-600" />
             </div>
           </div>
@@ -265,17 +265,20 @@ const Dashboard = () => {
             {/* Left column - 2/3 width */}
             <div className="lg:col-span-2 space-y-6">
               {/* Welcome banner */}
-              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-6 text-white">
+              <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg p-6 text-white shadow-md">
                 <h1 className="text-2xl font-semibold">Welcome Back, {user.firstName} {user.lastName}</h1>
-                <p className="opacity-90">You have {tasks.length} Task for today</p>
+                <p className="opacity-90 mt-1">You have {tasks.filter(task => !task.completed).length} active tasks for today</p>
               </div>
               
               {/* Upcoming tasks section */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold mb-4">Up next</h2>
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <Clock size={20} className="mr-2 text-blue-500" />
+                  <span>Up next</span>
+                </h2>
                 
                 <div className="space-y-4">
-                  <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                  <div className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow bg-gray-50">
                     <h3 className="font-medium text-gray-800">Design Team Meeting - Discuss new project wireframes</h3>
                     <div className="flex items-center mt-2 text-gray-500">
                       <Clock size={16} className="mr-2" />
@@ -294,10 +297,10 @@ const Dashboard = () => {
               </div>
               
               {/* Task input section */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
                 <div className="flex items-center">
                   <div 
-                    className="w-5 h-5 border-2 border-gray-300 rounded-full mr-3 cursor-pointer"
+                    className="w-5 h-5 border-2 border-gray-300 rounded-full mr-3 cursor-pointer hover:border-blue-500 transition-colors"
                   ></div>
                   
                   <input 
@@ -313,47 +316,55 @@ const Dashboard = () => {
                 </div>
                 
                 <div className="flex items-center justify-between mt-4">
-                  <button className="flex items-center space-x-2 px-3 py-1 border border-gray-200 rounded-md">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <button className="flex items-center space-x-2 px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
+                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
                     <span>Inbox</span>
                     <ChevronDown size={16} />
                   </button>
                   
                   <div className="flex items-center space-x-2">
-                    <div className="flex items-center space-x-1 px-2 py-1 bg-blue-50 text-blue-600 rounded-md">
+                    <div className="flex items-center space-x-1 px-3 py-1 bg-blue-50 text-blue-600 rounded-md hover:bg-blue-100 transition-colors">
                       <Clock size={16} />
                       <span>Now</span>
                     </div>
                     
-                    <div className="flex items-center space-x-1 px-2 py-1 text-gray-600 rounded-md hover:bg-gray-100">
+                    <div className="flex items-center space-x-1 px-3 py-1 text-gray-600 rounded-md hover:bg-gray-100 transition-colors">
                       <Calendar size={16} />
                       <span>Tomorrow</span>
                     </div>
                     
-                    <div className="flex items-center space-x-1 px-2 py-1 text-gray-600 rounded-md hover:bg-gray-100">
+                    <div className="flex items-center space-x-1 px-3 py-1 text-gray-600 rounded-md hover:bg-gray-100 transition-colors">
                       <Calendar size={16} />
                       <span>Next week</span>
                     </div>
                   </div>
                   
-                  <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50">
+                  <button className="px-3 py-1 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
                     Custom
                   </button>
                 </div>
               </div>
               
               {/* Today's task list */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold mb-4">Today's task</h2>
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <Check size={20} className="mr-2 text-green-500" />
+                  <span>Today's tasks</span>
+                </h2>
                 
                 <div className="space-y-3">
                   {tasks.map(task => (
-                    <div key={task.id} className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0">
+                    <div 
+                      key={task.id} 
+                      className="flex items-center justify-between py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors px-2 rounded-md"
+                    >
                       <div className="flex items-center">
                         <div 
-                          className={`w-5 h-5 border-2 ${task.completed ? 'bg-blue-500 border-blue-500' : 'border-gray-300'} rounded-full mr-3 cursor-pointer`}
+                          className={`w-5 h-5 border-2 ${task.completed ? 'bg-blue-500 border-blue-500' : 'border-gray-300'} rounded-full mr-3 cursor-pointer hover:border-blue-500 transition-colors flex items-center justify-center`}
                           onClick={() => toggleTaskCompleted(task.id)}
-                        ></div>
+                        >
+                          {task.completed && <Check size={12} className="text-white" />}
+                        </div>
                         
                         <div>
                           <div className={`font-medium ${task.completed ? 'line-through opacity-60' : ''}`}>
@@ -370,6 +381,7 @@ const Dashboard = () => {
                       </div>
                       
                       <div className="flex items-center text-gray-500 text-sm">
+                        <Clock size={14} className="mr-1" />
                         {task.time}
                         <ChevronRight size={16} className="ml-2" />
                       </div>
@@ -382,13 +394,16 @@ const Dashboard = () => {
             {/* Right column - 1/3 width */}
             <div className="space-y-6">
               {/* Calendar widget */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold mb-4">Calendar</h2>
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
+                <h2 className="text-lg font-semibold mb-4 flex items-center">
+                  <Calendar size={20} className="mr-2 text-blue-500" />
+                  <span>Calendar</span>
+                </h2>
                 
                 {/* Calendar component would go here */}
-                <div className="bg-gray-100 rounded-lg p-4 text-center">
+                <div className="bg-gray-50 rounded-lg p-4 text-center">
                   <div className="text-sm text-gray-500">Calendar placeholder</div>
-                  <div className="mt-2 text-gray-800">
+                  <div className="mt-2 text-gray-800 font-medium">
                     {selectedCalendarDate.toLocaleDateString('en-US', { 
                       weekday: 'long', 
                       year: 'numeric', 
@@ -400,10 +415,13 @@ const Dashboard = () => {
               </div>
               
               {/* Focus timer widget */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow duration-300">
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-semibold">Focus timer</h2>
-                  <div className="flex items-center text-gray-600 cursor-pointer">
+                  <h2 className="text-lg font-semibold flex items-center">
+                    <Clock size={20} className="mr-2 text-indigo-500" />
+                    <span>Focus timer</span>
+                  </h2>
+                  <div className="flex items-center text-gray-600 cursor-pointer hover:text-gray-800 transition-colors">
                     <span className="mr-1">Task List</span>
                     <ChevronDown size={16} />
                   </div>
@@ -411,30 +429,30 @@ const Dashboard = () => {
                 
                 <div className="flex items-center justify-between mb-6">
                   <button 
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                     onClick={decreaseTimer}
                     disabled={timerRunning || timerMinutes <= 5}
                   >
-                    <Minus size={20} />
+                    <Minus size={20} className={timerRunning || timerMinutes <= 5 ? "text-gray-400" : "text-gray-700"} />
                   </button>
                   
-                  <div className="text-2xl font-bold">{formatTimerDisplay()}</div>
+                  <div className="text-2xl font-bold text-gray-800">{formatTimerDisplay()}</div>
                   
                   <button 
-                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200"
+                    className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
                     onClick={increaseTimer}
                     disabled={timerRunning || timerMinutes >= 60}
                   >
-                    <Plus size={20} />
+                    <Plus size={20} className={timerRunning || timerMinutes >= 60 ? "text-gray-400" : "text-gray-700"} />
                   </button>
                 </div>
                 
                 <button 
-                  className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center justify-center font-medium"
+                  className={`w-full py-3 ${timerRunning ? 'bg-red-500 hover:bg-red-600' : 'bg-blue-600 hover:bg-blue-700'} text-white rounded-lg flex items-center justify-center font-medium transition-colors`}
                   onClick={toggleTimer}
                 >
                   {timerRunning ? <Pause size={18} className="mr-2" /> : <Play size={18} className="mr-2" />}
-                  <span>{timerRunning ? 'Pause' : 'Start'}</span>
+                  <span>{timerRunning ? 'Pause' : 'Start Focus'}</span>
                 </button>
               </div>
             </div>

@@ -4,7 +4,8 @@ import LandingPage from './pages/landing';
 import Login from './pages/login';
 import Signup from './pages/signup';
 import UserSettings from './pages/settings'; 
-import Dashboard from './pages/dashbaord';
+import Dashboard from './pages/dashboard';
+
 
 function App() {
   return (
@@ -14,6 +15,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/settings" element={<UserSettings />} />
+        <Route path='/login/dashboard' element={<Dashboard />} />
+        
       </Routes>
     </Router>
   );
