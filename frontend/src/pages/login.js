@@ -142,7 +142,9 @@ const Login = () => {
               onChange={handleChange} 
               required 
             />
-            <button type="submit">Login</button>
+            <Link to="/dashboard">
+              <button type="submit">Login</button>
+            </Link>
             <Link to="/forgot-password" className="forgot-link">Forgot Password?</Link>
           </form>
         </div>
