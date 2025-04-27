@@ -130,7 +130,7 @@ const LandingPage = () => {
 
         <section className={styles.features}>
           <div className={styles.featuresContainer}>
-            <div className={styles.sectionHeading}>
+            <div className={styles.featureHeading}>
               <h2>Features crafted for modern teams</h2>
               <p>Everything you need to streamline your workflow in one intuitive platform.</p>
             </div>
