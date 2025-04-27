@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // Import both Link and useNavigate
 import '../css/signup.css';
 import '../css/toast.css';
 
-
 const Signup = () => {
+  const navigate = useNavigate(); // Initialize useNavigate hook
+  
   // State for form data
   const [formData, setFormData] = useState({
     firstName: '',
@@ -24,8 +24,6 @@ const Signup = () => {
     title: '',
     message: ''
   });
-
-  const navigate = useNavigate();
 
   useEffect(() => {
     // Remove logged in user data on component mount (equivalent to page load)
@@ -54,6 +52,12 @@ const Signup = () => {
     setTimeout(() => {
       setToast(prev => ({ ...prev, visible: false }));
     }, 3000);
+  };
+
+  // Handle sign in button click
+  const handleSignInClick = (e) => {
+    e.preventDefault();
+    navigate('/login'); // Navigate programmatically to login page
   };
 
   // Handle form submission
@@ -86,7 +90,7 @@ const Signup = () => {
 
       if (response.ok) {
         showToast("success", "Signup Successful", "Welcome to WorkSphere. Redirecting to login page...");
-        
+
         // Reset form
         setFormData({
           firstName: '',
@@ -97,9 +101,11 @@ const Signup = () => {
           password: '',
           confirmPassword: ''
         });
-        
+
         // Redirect to login page after 2 seconds
-        setTimeout(() => navigate("/login"), 2000);
+        setTimeout(() => {
+          navigate('/login'); // Use navigate instead of window.location.href
+        }, 2000);
       } else {
         const errorData = await response.text();
         showToast("error", "Signup Failed", "Error: " + errorData);
@@ -127,17 +133,22 @@ const Signup = () => {
         <div className="left">
           <h2>Come join us!</h2>
           <p>
-            We are so excited to have you here. If you haven't already, create an account 
+            We are so excited to have you here. If you haven't already, create an account
             to get access to exclusive offers, rewards, and discounts.
           </p>
+
+          {/* Option 1: Direct button with onClick handler */}
           <button 
             className="signin-button" 
-            onClick={() => navigate('/login')}
+            onClick={handleSignInClick}
+            style={{ cursor: 'pointer' }}
           >
             Already have an account? Sign in.
           </button>
+          
+
         </div>
-        
+
         {/* Right Side (Signup Form) */}
         <div className="right">
           <h2>Signup</h2>
@@ -198,7 +209,7 @@ const Signup = () => {
               onChange={handleChange}
               required
             />
-            <button type="submit">Signup</button>
+            <button type="submit" style={{ cursor: 'pointer' }}>Signup</button>
           </form>
         </div>
       </div>
