@@ -4,7 +4,7 @@ import LandingPage from './pages/landing';
 import Login from './pages/login';
 import Signup from './pages/signup';
 import UserSettings from './pages/settings'; 
-import Dashboard from './pages/dashbaord';
+import Dashboard from './pages/dashboard';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
