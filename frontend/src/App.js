@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/landing';
 import Login from './pages/login';
 import Signup from './pages/signup';
-import UserSettings from './pages/settings'; 
-import Dashboard from './pages/dashbaord';
 import ScrollToTop from './components/ScrollToTop';
 
 function App() {
@@ -15,9 +13,6 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/settings" element={<UserSettings />} />
-        <Route path='/login/dashboard' element={<Dashboard />} />
-        
       </Routes>
     </Router>
   );

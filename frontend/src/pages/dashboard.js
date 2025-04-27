@@ -78,9 +78,9 @@ const Dashboard = () => {
       showToast("User not found! Redirecting to login.", "error");
       setTimeout(() => {
         // Redirect to login page using react-router
-        window.location.href = "/login";
+        //window.location.href = "/login";
       }, 2000);
-      return;
+      //return;
     }
 
     setUser({
