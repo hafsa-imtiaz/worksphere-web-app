@@ -73,6 +73,14 @@ body {
     opacity: 0.9;
 }
 
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: auto;
+  }
+  
+  
 .signin-button {
     display: inline-block;
     background: rgba(88, 69, 210, 0.8); /* SlateBlue with transparency */
