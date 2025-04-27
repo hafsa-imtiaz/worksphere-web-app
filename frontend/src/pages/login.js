@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import styles from '../css/login.module.css';
-
+import Dashboard from './dashboard'; 
 const Login = () => {
   // State for form fields
   const [formData, setFormData] = useState({
@@ -86,7 +86,7 @@ const Login = () => {
 
         // Redirect based on user type
         setTimeout(() => {
-          navigate(user.userType === "ADMIN" ? "/admin" : "/dashboard");
+          navigate(user.userType === "ADMIN" ? "/admin" : "/login/dashboard");
         }, 2000);
 
       } else {
@@ -152,6 +152,7 @@ const Login = () => {
             <button 
               type="submit" 
               className={styles.submitButton}
+              
             >
               Login
             </button>
