@@ -43,6 +43,7 @@ const Header = ({
   };
 
   const handleNavigateToSettings = () => {
+    // Modified to work both in dropdown and as direct button
     navigate('/profile#settings');
     setProfileDropdownOpen(false);
   };
@@ -55,6 +56,11 @@ const Header = ({
   const handleLogout = () => {
     alert('Logging out...');
     setProfileDropdownOpen(false);
+  };
+
+  const handleToggleDarkMode = (e) => {
+    e.stopPropagation(); // Prevent event bubbling
+    toggleDarkMode();
   };
 
   return (
@@ -91,21 +97,32 @@ const Header = ({
         </div>
         
         {/* Notifications */}
-        <button className={styles.iconButton} aria-label="Notifications" onClick={handleNavigateToInbox}>
+        <button 
+          className={styles.iconButton} 
+          aria-label="Notifications" 
+          onClick={handleNavigateToInbox}
+          style={{ cursor: 'pointer' }} // Ensure pointer cursor
+        >
           <div className={styles.notificationIndicator}></div>
           <Bell size={20} />
         </button>
         
-        {/* Settings */}
-        <button className={styles.iconButton} aria-label="Settings" onClick={handleNavigateToSettings}>
+        {/* Settings - Fixed onClick handler */}
+        <button 
+          className={styles.iconButton} 
+          aria-label="Settings" 
+          onClick={handleNavigateToSettings}
+          style={{ cursor: 'pointer' }} // Ensure pointer cursor
+        >
           <Settings size={20} />
         </button>
         
-        {/* Theme Toggle */}
+        {/* Theme Toggle - Fixed onClick handler */}
         <button 
-          onClick={toggleDarkMode} 
+          onClick={handleToggleDarkMode} 
           className={`${styles.themeToggle} ${darkMode ? styles.darkToggle : styles.lightToggle}`}
           aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+          style={{ cursor: 'pointer', position: 'relative', zIndex: 10 }} // Ensure pointer cursor and proper z-index
         >
           {darkMode ? (
             <Sun size={20} className={styles.themeIcon} />

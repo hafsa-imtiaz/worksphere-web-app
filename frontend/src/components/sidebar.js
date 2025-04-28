@@ -7,7 +7,7 @@ import defaultpfp from '../assets/profile-pfp/default-pfp.jpeg';
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { darkMode, toggleDarkMode } = useDarkMode();
+  const { darkMode, toggleDarkMode, theme, setThemePreference } = useDarkMode();
   const [expanded, setExpanded] = useState(localStorage.getItem('sidebarExpanded') !== 'false');
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,6 +103,51 @@ const Sidebar = () => {
     return location.pathname === path;
   };
 
+  // Handle theme cycling
+  const cycleTheme = () => {
+    if (theme === 'light') {
+      setThemePreference('dark');
+    } else if (theme === 'dark') {
+      setThemePreference('system');
+    } else {
+      setThemePreference('light');
+    }
+  };
+
+  // Get appropriate theme icon
+  const getThemeIcon = () => {
+    if (theme === 'dark' || (theme === 'system' && darkMode)) {
+      return (
+        <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      );
+    } else if (theme === 'light') {
+      return (
+        <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+        </svg>
+      );
+    } else {
+      return (
+        <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        </svg>
+      );
+    }
+  };
+
+  // Get theme tooltip text
+  const getThemeTooltip = () => {
+    if (theme === 'light') {
+      return "Switch to dark mode";
+    } else if (theme === 'dark') {
+      return "Switch to system preference";
+    } else {
+      return `Switch to light mode (currently using ${darkMode ? 'dark' : 'light'} system preference)`;
+    }
+  };
+
   return (
     <div className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed} ${darkMode ? styles.darkMode : styles.lightMode}`}>
       {/* Logo and Toggle */}
@@ -111,7 +156,7 @@ const Sidebar = () => {
           <h1 className={styles.logo}>WorkSphere</h1>
         ) : (
           <div className={styles.logoIcon}>
-            <span>T</span>
+            <span>W</span>
           </div>
         )}
         <button 
@@ -160,9 +205,9 @@ const Sidebar = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
           </svg>}
           label="My Tasks"
-          active={isActive('/mytasks')}
+          active={isActive('/tasks')}
           expanded={expanded}
-          onClick={() => navigate('/mytasks')}
+          onClick={() => navigate('/tasks')}
         />
         <NavItem 
           icon={<svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +233,7 @@ const Sidebar = () => {
           <div className={styles.projectsHeader}>
             {expanded && <h2 className={styles.sectionTitle}>Projects</h2>}
             <button 
-              onClick={() => navigate('/new-project')}
+              onClick={() => navigate('/project/create')}
               className={`${styles.addProjectButton} ${expanded ? '' : styles.centerIcon}`}
               title="Add new project"
             >
@@ -255,21 +300,18 @@ const Sidebar = () => {
         />
       </div>
 
-      {/* Dark Mode Toggle */}
+      {/* Dark Mode Toggle - Updated to support theme cycling */}
       <button 
         className={styles.darkModeToggle}
-        onClick={toggleDarkMode}
-        title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-        aria-label="Toggle dark mode"
+        onClick={cycleTheme}
+        title={getThemeTooltip()}
+        aria-label="Toggle theme"
       >
-        {darkMode ? (
-          <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-        ) : (
-          <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
+        {getThemeIcon()}
+        {expanded && theme === 'system' && (
+          <span className={styles.themeIndicator}>
+            {darkMode ? 'Dark' : 'Light'} (System)
+          </span>
         )}
       </button>
     </div>
