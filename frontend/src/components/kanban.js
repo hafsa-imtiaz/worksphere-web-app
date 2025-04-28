@@ -16,7 +16,8 @@ const KanbanBoard = ({
   handleBoardDragEnd,
   handleBoardDragEnter,
   onAddTask,
-  getMemberById
+  getMemberById,
+  onDeleteBoard
 }) => {
   // Get board header style based on dragging state
   const getBoardHeaderStyle = () => {
@@ -58,9 +59,18 @@ const KanbanBoard = ({
         <h3 className={styles.boardTitle}>
           {board.title}
         </h3>
-        <span className={styles.taskCount}>
-          {board.tasks.length} {board.tasks.length === 1 ? 'task' : 'tasks'}
-        </span>
+        <div className={styles.boardActions}>
+          <span className={styles.taskCount}>
+            {board.tasks.length} {board.tasks.length === 1 ? 'task' : 'tasks'}
+          </span>
+          <button 
+            className={styles.deleteButton}
+            onClick={() => onDeleteBoard(board.id)}
+            title="Delete board"
+          >
+            ×
+          </button>
+        </div>
       </div>
 
       <div 
@@ -73,10 +83,26 @@ const KanbanBoard = ({
             handleTaskDragEnter(e, 0, board.id);
           }
         }}
+        onDrop={(e) => {
+          // Ensure drop events are handled properly
+          e.preventDefault();
+          if (draggingTask && board.tasks.length === 0) {
+            handleTaskDragEnter(e, 0, board.id);
+          }
+        }}
       >
         {/* Empty state message when no tasks */}
         {board.tasks.length === 0 && (
-          <div className={styles.emptyBoard}>
+          <div 
+            className={styles.emptyBoard}
+            onDragOver={(e) => e.preventDefault()}
+            onDragEnter={(e) => {
+              e.preventDefault();
+              if (draggingTask) {
+                handleTaskDragEnter(e, 0, board.id);
+              }
+            }}
+          >
             <p>No tasks yet</p>
             <p>Drag tasks here or add a new one</p>
           </div>

@@ -1,6 +1,6 @@
 .projectPage {
   min-height: 100vh;
-  background-color: #f4eef8;
+  background-color: #f8f4fa;
   display: flex;
   flex-direction: column;
 }
@@ -23,10 +23,38 @@
   margin: 0 auto;
 }
 
+.projectTitleWrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
 .projectTitle {
   font-size: 26px;
   font-weight: 700;
   margin: 0 0 4px 0;
+}
+
+.editButton {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.editButton:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.editIcon {
+  color: white;
+  font-size: 14px;
 }
 
 .projectDescription {

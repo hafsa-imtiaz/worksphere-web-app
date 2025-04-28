@@ -114,6 +114,12 @@ const ProjectPage = () => {
     dueDate: "",
     assignedTo: []
   });
+  const [showEditProjectForm, setShowEditProjectForm] = useState(false);
+  const [editedProject, setEditedProject] = useState({
+    name: "",
+    description: "",
+    deadline: ""
+  });
   const [draggingTask, setDraggingTask] = useState(false);
   const [draggingBoard, setDraggingBoard] = useState(false);
 
@@ -169,8 +175,15 @@ const ProjectPage = () => {
     const sourceBoardIndex = newBoards.findIndex(board => board.id === sourceBoardId);
     const targetBoardIndex = newBoards.findIndex(board => board.id === targetBoardId);
     
+    // Console log for debugging
+    console.log(`Moving from board ${sourceBoardId} to board ${targetBoardId}`);
+    console.log(`Board indices: source=${sourceBoardIndex}, target=${targetBoardIndex}`);
+    
     // Exit if boards not found
-    if (sourceBoardIndex < 0 || targetBoardIndex < 0) return;
+    if (sourceBoardIndex < 0 || targetBoardIndex < 0) {
+      console.error("Board not found", { sourceBoardId, targetBoardId, boards: newBoards.map(b => b.id) });
+      return;
+    }
     
     // Clone tasks arrays
     const sourceTasks = [...newBoards[sourceBoardIndex].tasks];
@@ -295,7 +308,9 @@ const ProjectPage = () => {
   const handleAddBoard = (e) => {
     e.preventDefault();
     if (newBoardTitle.trim()) {
-      const newBoardId = `board-${project.boards.length + 1}`;
+      // Generate a unique ID that doesn't depend on length
+      const newBoardId = `board-${Date.now()}`;
+      
       setProject({
         ...project,
         boards: [
@@ -341,6 +356,45 @@ const ProjectPage = () => {
     setSelectedBoardId(boardId);
     setShowAddTaskForm(true);
   };
+  
+  // Handle delete board
+  const handleDeleteBoard = (boardId) => {
+    if (window.confirm("Are you sure you want to delete this board? All tasks in this board will be deleted.")) {
+      const updatedBoards = project.boards.filter(board => board.id !== boardId);
+      setProject({
+        ...project,
+        boards: updatedBoards
+      });
+    }
+  };
+  
+  // Initialize edit project form
+  const handleShowEditProjectForm = () => {
+    const deadline = project.boards
+      .flatMap(board => board.tasks)
+      .map(task => task.dueDate)
+      .filter(date => date)
+      .sort((a, b) => new Date(b) - new Date(a))[0] || "";
+      
+    setEditedProject({
+      name: project.name,
+      description: project.description,
+      deadline: deadline
+    });
+    
+    setShowEditProjectForm(true);
+  };
+  
+  // Handle edit project save
+  const handleEditProject = (e) => {
+    e.preventDefault();
+    setProject({
+      ...project,
+      name: editedProject.name,
+      description: editedProject.description
+    });
+    setShowEditProjectForm(false);
+  };
 
   return (
     <div className={styles.projectPage}>
@@ -350,7 +404,16 @@ const ProjectPage = () => {
       <div className={styles.projectHeader}>
         <div className={styles.projectHeaderContent}>
           <div>
-            <h1 className={styles.projectTitle}>{project.name}</h1>
+            <div className={styles.projectTitleWrapper}>
+              <h1 className={styles.projectTitle}>{project.name}</h1>
+              <button 
+                className={styles.editButton}
+                onClick={handleShowEditProjectForm}
+                title="Edit project details"
+              >
+                <span className={styles.editIcon}>✎</span>
+              </button>
+            </div>
             <p className={styles.projectDescription}>{project.description}</p>
           </div>
           <div className={styles.memberSection}>
@@ -404,6 +467,7 @@ const ProjectPage = () => {
               handleBoardDragEnter={handleBoardDragEnter}
               onAddTask={handleShowAddTaskForm}
               getMemberById={getMemberById}
+              onDeleteBoard={handleDeleteBoard}
             />
           ))}
           
@@ -578,6 +642,62 @@ const ProjectPage = () => {
                   className={styles.confirmBtn}
                 >
                   Add Task
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+      
+      {/* Edit Project Modal */}
+      {showEditProjectForm && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2 className={styles.modalTitle}>Edit Project Details</h2>
+            <form onSubmit={handleEditProject}>
+              <div className={styles.formGroup}>
+                <label>Project Name</label>
+                <input
+                  type="text"
+                  value={editedProject.name}
+                  onChange={(e) => setEditedProject({...editedProject, name: e.target.value})}
+                  className={styles.formInput}
+                  placeholder="Project name"
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Description</label>
+                <textarea
+                  value={editedProject.description}
+                  onChange={(e) => setEditedProject({...editedProject, description: e.target.value})}
+                  className={styles.formTextarea}
+                  placeholder="Project description"
+                  rows={3}
+                />
+              </div>
+              <div className={styles.formGroup}>
+                <label>Project Deadline</label>
+                <input
+                  type="date"
+                  value={editedProject.deadline}
+                  onChange={(e) => setEditedProject({...editedProject, deadline: e.target.value})}
+                  className={styles.formInput}
+                />
+                <p className={styles.helpText}>This will help track overall project progress</p>
+              </div>
+              <div className={styles.formActions}>
+                <button
+                  type="button"
+                  onClick={() => setShowEditProjectForm(false)}
+                  className={styles.cancelBtn}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className={styles.confirmBtn}
+                >
+                  Save Changes
                 </button>
               </div>
             </form>
