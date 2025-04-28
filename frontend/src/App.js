@@ -14,20 +14,22 @@ import MyTasks from './pages/MyTask.js';
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path='/calendar' element={<MyCalendar />} />
-        <Route path='/project/:id' element={<Project />} />
-        <Route path="/profile" element={<UserProfile />} />
-        <Route path="/inbox" element={<Inbox />} />
-        <Route path="/tasks" element={<MyTasks />} />
-      </Routes>
-    </Router>
+    <DarkModeProvider>
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path='/calendar' element={<MyCalendar />} />
+          <Route path='/project/:id' element={<Project />} />
+          <Route path="/profile" element={<UserProfile />} />
+          <Route path="/inbox" element={<Inbox />} />
+          <Route path="/tasks" element={<MyTasks />} />
+        </Routes>
+      </Router>
+    </DarkModeProvider>
   );
 }
 

@@ -4,10 +4,17 @@ import Layout from '../components/ui-essentials/Layout';
 import Header from '../components/header';
 import styles from "../css/settings.module.css";
 import { useLocation } from 'react-router-dom';
+import { useDarkMode } from '../contexts/DarkModeContext'; // Import the context hook
 
 export default function UserSettings() {
   const [activeTab, setActiveTab] = useState('security');
-  const [theme, setTheme] = useState('system');
+  const { darkMode, theme, setThemePreference, toggleDarkMode } = useDarkMode();
+  
+  // Handle theme selection in appearance tab
+  const handleThemeChange = (selectedTheme) => {
+    setThemePreference(selectedTheme);
+  };
+  
   // Add avatar state
   const [avatar, setAvatar] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
@@ -16,7 +23,6 @@ export default function UserSettings() {
   const [isMobile, setIsMobile] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  
   // Get location to access hash
   const location = useLocation();
   // Get sidebar state from localStorage
@@ -39,6 +45,38 @@ export default function UserSettings() {
     }
     
   }, [location.hash]);
+  
+  // Handle theme changes
+  useEffect(() => {
+    // Store the current theme preference
+    localStorage.setItem('theme', theme);
+    
+    // Apply theme based on selection
+    if (theme === 'dark') {
+      // Force dark mode
+      if (!darkMode) toggleDarkMode();
+    } else if (theme === 'light') {
+      // Force light mode
+      if (darkMode) toggleDarkMode();
+    } else if (theme === 'system') {
+      // Use system preference
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (prefersDark !== darkMode) {
+        toggleDarkMode();
+      }
+      
+      // Listen for system preference changes
+      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+      const handleChange = (e) => {
+        if (theme === 'system' && e.matches !== darkMode) {
+          toggleDarkMode();
+        }
+      };
+      
+      mediaQuery.addEventListener('change', handleChange);
+      return () => mediaQuery.removeEventListener('change', handleChange);
+    }
+  }, [theme, darkMode, toggleDarkMode]);
   
   const [notificationSettings, setNotificationSettings] = useState({
     emailNotifications: true,
@@ -356,37 +394,42 @@ export default function UserSettings() {
       case 'appearance':
         return (
           <div>
-            <div className={styles.sectionHeader}>
-              <Palette size={20} className={styles.sectionIcon} />
-              <h2 className={styles.sectionTitle}>Appearance</h2>
+          <div className={styles.sectionHeader}>
+            <Palette size={20} className={styles.sectionIcon} />
+            <h2 className={styles.sectionTitle}>Appearance</h2>
+          </div>
+          
+          <div>
+            <h3 className={styles.sectionTitle} style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>Theme Selection</h3>
+            <div className={styles.themesContainer}>
+              {[{ name: 'light', icon: Sun }, { name: 'dark', icon: Moon }, { name: 'system', icon: Monitor }].map((option) => (
+                <div
+                  key={option.name}
+                  onClick={() => handleThemeChange(option.name)}
+                  className={`${styles.themeOption} ${
+                    theme === option.name ? styles.themeOptionActive : styles.themeOptionInactive
+                  }`}
+                >
+                  <option.icon 
+                    size={32} 
+                    className={theme === option.name ? styles.themeIconActive : styles.themeIconInactive} 
+                  />
+                  <span className={`${styles.themeLabel} ${
+                    theme === option.name ? styles.themeLabelActive : styles.themeLabelInactive
+                  }`}>
+                    {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
+                  </span>
+                </div>
+              ))}
             </div>
-            
-            <div>
-              <h3 className={styles.sectionTitle} style={{ fontSize: '1.125rem', marginBottom: '1rem' }}>Theme Selection</h3>
-              <div className={styles.themesContainer}>
-                {[{ name: 'light', icon: Sun }, { name: 'dark', icon: Moon }, { name: 'system', icon: Monitor }].map((option) => (
-                  <div
-                    key={option.name}
-                    onClick={() => setTheme(option.name)}
-                    className={`${styles.themeOption} ${
-                      theme === option.name ? styles.themeOptionActive : styles.themeOptionInactive
-                    }`}
-                  >
-                    <option.icon 
-                      size={32} 
-                      className={theme === option.name ? styles.themeIconActive : styles.themeIconInactive} 
-                    />
-                    <span className={`${styles.themeLabel} ${
-                      theme === option.name ? styles.themeLabelActive : styles.themeLabelInactive
-                    }`}>
-                      {option.name}
-                    </span>
-                  </div>
-                ))}
-              </div>
+            <div className={styles.themeDescription} style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+              {theme === 'light' && "Light theme uses a bright background with dark text for high contrast."}
+              {theme === 'dark' && "Dark theme uses a dark background with light text to reduce eye strain."}
+              {theme === 'system' && "System theme automatically matches your device's appearance settings."}
             </div>
           </div>
-        );
+        </div>
+          );
 
       case 'security':
         return (
@@ -481,7 +524,7 @@ export default function UserSettings() {
           greeting={"Account Settings"} 
           toggleSidebar={toggleSidebar}
           isMobile={isMobile}
-          isRefreshing={refreshing}
+          sidebarOpen={isSidebarExpanded} // Change this line
         />
         {/* Settings Container */}
         <div className={styles.settingsContainer}>

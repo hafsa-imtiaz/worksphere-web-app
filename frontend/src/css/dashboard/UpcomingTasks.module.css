@@ -330,3 +330,69 @@
     justify-content: space-between;
   }
 }
+/* UpcomingTasks.module.css */
+
+/* Existing styles remain the same */
+
+/* Dark mode styles */
+.darkMode {
+  background-color: #1e1e2e;
+  color: #cdd6f4;
+  border-color: #313244;
+}
+
+.darkModeText {
+  color: #cdd6f4;
+}
+
+.darkModeSecondaryText {
+  color: #a6adc8;
+}
+
+.darkModeButton {
+  background-color: #313244;
+  color: #cdd6f4;
+  border-color: #45475a;
+}
+
+.darkModeButton:hover {
+  background-color: #45475a;
+}
+
+.darkModeTaskItem {
+  background-color: #313244;
+  border-color: #45475a;
+}
+
+.darkModeCheckbox {
+  border-color: #45475a;
+}
+
+.darkModeIcon {
+  color: #89b4fa;
+}
+
+.darkModeBadge {
+  background-color: #45475a;
+}
+
+.darkModeEmptyState {
+  color: #a6adc8;
+  border-color: #45475a;
+}
+
+/* You may need to override specific priority colors for dark mode */
+.darkMode .priorityHigh {
+  background-color: rgba(243, 139, 168, 0.2);
+  color: #f38ba8;
+}
+
+.darkMode .priorityMedium {
+  background-color: rgba(249, 226, 175, 0.2);
+  color: #f9e2af;
+}
+
+.darkMode .priorityLow {
+  background-color: rgba(166, 227, 161, 0.2);
+  color: #a6e3a1;
+}

@@ -35,9 +35,7 @@ const LayoutContent = ({ children }) => {
 
 const Layout = ({ children }) => {
   return (
-    <DarkModeProvider>
-      <LayoutContent>{children}</LayoutContent>
-    </DarkModeProvider>
+    <LayoutContent>{children}</LayoutContent>
   );
 };
 

@@ -58,10 +58,14 @@ const UpcomingTasks = ({ tasks: initialTasks }) => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className={`${styles.container} ${darkMode ? styles.darkMode : ''}`}>
       <div className={styles.header}>
-        <h2 className={styles.title}>Upcoming Tasks</h2>
-        <button className={styles.viewAllButton}>View All Tasks</button>
+        <h2 className={`${styles.title} ${darkMode ? styles.darkModeText : ''}`}>
+          Upcoming Tasks
+        </h2>
+        <button className={`${styles.viewAllButton} ${darkMode ? styles.darkModeButton : ''}`}>
+          View All Tasks
+        </button>
       </div>
       
       <div className={styles.taskList}>
@@ -69,7 +73,7 @@ const UpcomingTasks = ({ tasks: initialTasks }) => {
           limitedSortedTasks.map((task, index) => (
             <motion.div 
               key={task.id || index}
-              className={`${styles.taskItem} ${task.completed ? styles.completed : ''}`}
+              className={`${styles.taskItem} ${task.completed ? styles.completed : ''} ${darkMode ? styles.darkModeTaskItem : ''}`}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
@@ -84,17 +88,21 @@ const UpcomingTasks = ({ tasks: initialTasks }) => {
                 />
                 <label 
                   htmlFor={`task-${task.id}`} 
-                  className={styles.checkboxLabel}
+                  className={`${styles.checkboxLabel} ${darkMode ? styles.darkModeCheckbox : ''}`}
                 >
-                  <MdCheckCircle className={styles.checkIcon} />
+                  <MdCheckCircle className={`${styles.checkIcon} ${darkMode ? styles.darkModeIcon : ''}`} />
                 </label>
               </div>
               
               <div className={styles.taskContent}>
-                <h3 className={styles.taskTitle}>{task.title}</h3>
+                <h3 className={`${styles.taskTitle} ${darkMode ? styles.darkModeText : ''}`}>
+                  {task.title}
+                </h3>
                 <div className={styles.taskMeta}>
-                  <span className={styles.dueDate}>{formatDate(task.dueDate)}</span>
-                  <span className={`${styles.priorityBadge} ${getPriorityClass(task.priority)}`}>
+                  <span className={`${styles.dueDate} ${darkMode ? styles.darkModeSecondaryText : ''}`}>
+                    {formatDate(task.dueDate)}
+                  </span>
+                  <span className={`${styles.priorityBadge} ${getPriorityClass(task.priority)} ${darkMode ? styles.darkModeBadge : ''}`}>
                     {task.priority}
                   </span>
                 </div>
@@ -102,9 +110,9 @@ const UpcomingTasks = ({ tasks: initialTasks }) => {
             </motion.div>
           ))
         ) : (
-          <div className={styles.emptyState}>
-            <p>No upcoming tasks</p>
-            <p>Add tasks to see them here</p>
+          <div className={`${styles.emptyState} ${darkMode ? styles.darkModeEmptyState : ''}`}>
+            <p className={darkMode ? styles.darkModeText : ''}>No upcoming tasks</p>
+            <p className={darkMode ? styles.darkModeSecondaryText : ''}>Add tasks to see them here</p>
           </div>
         )}
       </div>
