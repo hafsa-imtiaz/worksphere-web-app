@@ -31,7 +31,7 @@ WorkSphere aims to provide a centralized workspace for teams to organize tasks, 
 
 ### Technologies Used
 - **Backend:** Java, Spring Boot
-- **Frontend:** HTML, CSS, JavaScript
+- **Frontend:** REACT, HTML, CSS, JavaScript
 - **Database:** MySQL
 - **Version Control:** Git, GitHub
 - **Build Tools:** Maven

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import styles from '../css/login.module.css';
+import styles from '../css/home/login.module.css';
+import Dashboard from './dashboard'; 
+import styles from '../css/home/login.module.css';
 
 const Login = () => {
   // State for form fields
@@ -152,6 +154,7 @@ const Login = () => {
             <button 
               type="submit" 
               className={styles.submitButton}
+              
             >
               Login
             </button>

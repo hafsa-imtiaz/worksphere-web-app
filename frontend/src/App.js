@@ -5,17 +5,22 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import UserSettings from './pages/settings';
 import ProjectManagement from './pages/project';
+import ScrollToTop from './components/ScrollToTop';
+import Dashboard from './pages/dashboard';
+import MyCalendar from './pages/MyCalendar.js'
+import { DarkModeProvider } from './contexts/DarkModeContext';
+import Project from './pages/project';
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/settings" element={<UserSettings />} />
-        <Route path="/project" element={<ProjectManagement />} /> 
       </Routes>
     </Router>
   );

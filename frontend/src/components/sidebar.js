@@ -1,197 +1,306 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import '../css/sidebar.css';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import styles from '../css/sidebar.module.css';
+import { useDarkMode } from '../contexts/DarkModeContext';
+import defaultpfp from '../assets/profile-pfp/default-pfp.jpeg';
 
 const Sidebar = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const [isCollapsed, setIsCollapsed] = useState(localStorage.getItem('sidebarCollapsed') === 'true');
-  const [userName, setUserName] = useState('John Doe');
-  const [profilePicture, setProfilePicture] = useState('./images/my-pfp.jpg');
+  const location = useLocation();
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  const [expanded, setExpanded] = useState(localStorage.getItem('sidebarExpanded') !== 'false');
+  const [projects, setProjects] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState({
+    name: 'John Doe',
+    avatar: defaultpfp
+  });
 
   useEffect(() => {
-    setUpUserName();
-    setupSidebarProfilePicture();
-    highlightActiveButton();
-  }, [location.pathname]);
+    // Load user info
+    const firstName = localStorage.getItem('UserFName') || '';
+    const lastName = localStorage.getItem('UserLName') || '';
+    const fullName = `${firstName} ${lastName}`.trim() || 'John Doe';
+    setUser(prev => ({ ...prev, name: fullName }));
+    
+    // Load user projects and profile picture
+    const userId = localStorage.getItem('loggedInUserID');
+    if (userId) {
+      fetchUserData(userId);
+      fetchProjects(userId);
+    }
 
-  const highlightActiveButton = () => {
-    const currentPage = location.pathname.split("/").pop().replace(".html", "");
-
-    const sidebarButtons = {
-      "dashboard": "dashboard-btn",
-      "mytasks": "tasks-btn",
-      "calendar": "calendar-btn",
-      "inbox": "inbox-btn",
-      "profile": "profile-btn"
+    // Listen for sidebar toggle events from Layout or other components
+    const handleSidebarToggle = (event) => {
+      if (event.detail && typeof event.detail.expanded === 'boolean') {
+        setExpanded(event.detail.expanded);
+      }
     };
 
-    return sidebarButtons[currentPage] || "";
-  };
+    window.addEventListener('sidebarToggled', handleSidebarToggle);
 
-  const capitalize = (name) => {
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  };
+    return () => {
+      window.removeEventListener('sidebarToggled', handleSidebarToggle);
+    };
+  }, []);
 
-  const setUpUserName = () => {
-    let firstName = localStorage.getItem("UserFName") || "";
-    let lastName = localStorage.getItem("UserLName") || "";
+  // Update expanded state when it changes
+  useEffect(() => {
+    localStorage.setItem('sidebarExpanded', String(expanded));
+  }, [expanded]);
 
-    firstName = capitalize(firstName);
-    lastName = capitalize(lastName);
-
-    let fullName = firstName + " " + lastName;
-    setUserName(fullName);
-  };
-
-  const setupSidebarProfilePicture = async () => {
-    const userId = localStorage.getItem("loggedInUserID") || "";
-    const API_URL = "http://localhost:8080/api/users";
-
-    if (!userId) {
-      console.error("User ID not found. Sidebar PFP update skipped.");
-      return;
-    }
-
+  const fetchUserData = async (userId) => {
     try {
-      const response = await fetch(`${API_URL}/${userId}`);
-      if (!response.ok) throw new Error("Failed to fetch user data");
-
-      const userData = await response.json();
-      const profilePicPath = userData.profilePicture; // Assuming this field stores the image path
-
-      setProfilePicture(profilePicPath ? profilePicPath : "./images/my-pfp.jpg");
+      const response = await fetch(`http://localhost:8080/api/users/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        if (data.profilePicture) {
+          setUser(prev => ({ ...prev, avatar: data.profilePicture }));
+        }
+      }
     } catch (error) {
-      console.error("Error fetching sidebar profile picture:", error);
-      setProfilePicture("./images/my-pfp.jpg"); // Fallback to default on error
+      console.error('Failed to fetch user data:', error);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("loggedInUser");
-    navigate('/login');
+  const fetchProjects = async (userId) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`http://localhost:8080/api/projects/user/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setProjects(data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch projects:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleSidebar = () => {
-    const newCollapsedState = !isCollapsed;
-    setIsCollapsed(newCollapsedState);
-    localStorage.setItem('sidebarCollapsed', newCollapsedState);
+    const newState = !expanded;
+    setExpanded(newState);
+    localStorage.setItem('sidebarExpanded', String(newState));
+    
+    // Dispatch event for Layout to listen for
+    window.dispatchEvent(new CustomEvent('sidebarToggled', { 
+      detail: { expanded: newState } 
+    }));
   };
 
-  const handleProjectClick = (projectId) => {
-    navigate(`/project?id=${projectId}`);
+  const handleLogout = () => {
+    ['loggedInUser', 'loggedInUserID', 'UserFName', 'UserLName', 'userToken'].forEach(
+      item => localStorage.removeItem(item)
+    );
+    navigate('/login');
   };
 
-  const addNewProject = () => {
-    // Implementation for adding a new project
-    console.log("Add new project functionality");
+  const isActive = (path) => {
+    if (path.startsWith('/project/') && location.pathname.startsWith('/project/')) {
+      return path === location.pathname;
+    }
+    return location.pathname === path;
   };
-
-  const activeButton = highlightActiveButton();
 
   return (
-    <div className={`sidebar ${isCollapsed ? 'collapsed' : ''}`} id="sidebar">
-      {/* Toggle button positioned absolutely */}
-      <button id="sidebar-toggle" className="sidebar-toggle" aria-label="Toggle sidebar" onClick={toggleSidebar}>
-        <span className="material-icons-outlined toggle-icon">
-          {isCollapsed ? 'chevron_right' : 'chevron_left'}
-        </span>
-      </button>
-      
-      <div className="user-info">
-        <img 
-          id="sidebar-pfp" 
-          src={profilePicture} 
-          alt="Profile Picture" 
-          className="profile-pic" 
-          onClick={() => navigate('/profile')}
-        />
-        <p className="user-name">{userName}</p>
+    <div className={`${styles.sidebar} ${expanded ? styles.expanded : styles.collapsed} ${darkMode ? styles.darkMode : styles.lightMode}`}>
+      {/* Logo and Toggle */}
+      <div className={styles.header}>
+        {expanded ? (
+          <h1 className={styles.logo}>WorkSphere</h1>
+        ) : (
+          <div className={styles.logoIcon}>
+            <span>T</span>
+          </div>
+        )}
+        <button 
+          onClick={toggleSidebar}
+          className={styles.toggleButton}
+          aria-label="Toggle sidebar"
+        >
+          {expanded ? (
+            <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+          ) : (
+            <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          )}
+        </button>
       </div>
-      
-      <nav className="sidebar-nav">
-        <button 
-          id="dashboard-btn" 
-          className={activeButton === "dashboard-btn" ? "current-btn" : ""}
+
+      {/* User Profile */}
+      <div className={`${styles.userProfile} ${expanded ? styles.userProfileExpanded : ''}`}>
+        <div className={styles.avatar}>
+          <img src={user.avatar} alt="User" />
+        </div>
+        {expanded && (
+          <div className={styles.userInfo}>
+            <p className={styles.userName}>{user.name}</p>
+            <p className={styles.userWorkspace}>My Workspace</p>
+          </div>
+        )}
+      </div>
+
+      {/* Main Navigation */}
+      <nav className={styles.navigation}>
+        <NavItem 
+          icon={<svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>}
+          label="Dashboard"
+          active={isActive('/dashboard')}
+          expanded={expanded}
           onClick={() => navigate('/dashboard')}
-        >
-          <span className="material-icons-outlined">dashboard</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Dashboard</span>
-        </button>
-        
-        <button 
-          id="tasks-btn" 
-          className={activeButton === "tasks-btn" ? "current-btn" : ""}
+        />
+        <NavItem 
+          icon={<svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>}
+          label="My Tasks"
+          active={isActive('/mytasks')}
+          expanded={expanded}
           onClick={() => navigate('/mytasks')}
-        >
-          <span className="material-icons-outlined">checklist</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>My Tasks</span>
-        </button>
-        
-        <button 
-          id="calendar-btn" 
-          className={activeButton === "calendar-btn" ? "current-btn" : ""}
+        />
+        <NavItem 
+          icon={<svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>}
+          label="Calendar"
+          active={isActive('/calendar')}
+          expanded={expanded}
           onClick={() => navigate('/calendar')}
-        >
-          <span className="material-icons-outlined">event</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Calendar</span>
-        </button>
-        
-        <button 
-          id="inbox-btn" 
-          className={activeButton === "inbox-btn" ? "current-btn" : ""}
+        />
+        <NavItem 
+          icon={<svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+          </svg>}
+          label="Inbox"
+          active={isActive('/inbox')}
+          expanded={expanded}
           onClick={() => navigate('/inbox')}
-        >
-          <span className="material-icons-outlined">mail</span> 
-          <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Inbox</span>
-        </button>
-        
-        <hr />
-        
-        <div className="projects-section">
-          <span>
-            <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>My Projects</span> 
-            <button id="add-project" onClick={addNewProject}>
-              <span className="material-icons-outlined" style={{ color: 'white' }}>add</span>
+        />
+
+        {/* Projects Section */}
+        <div className={styles.projectsSection}>
+          <div className={styles.projectsHeader}>
+            {expanded && <h2 className={styles.sectionTitle}>Projects</h2>}
+            <button 
+              onClick={() => navigate('/new-project')}
+              className={`${styles.addProjectButton} ${expanded ? '' : styles.centerIcon}`}
+              title="Add new project"
+            >
+              <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
             </button>
-          </span>
-          
-          <div className="projects-list" id="projects-list">
-            {[1, 2, 3, 4].map(projectId => (
-              <button 
-                key={projectId}
-                className="project-btn" 
-                onClick={() => handleProjectClick(projectId)}
-              >
-                <span className="material-icons-outlined">folder</span> 
-                <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>
-                  Project {projectId}
-                </span>
-              </button>
-            ))}
+          </div>
+
+          <div className={styles.projectsList}>
+            {isLoading ? (
+              <div className={`${styles.loadingState} ${expanded ? '' : styles.centerIcon}`}>
+                <svg className={styles.spinIcon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <circle className={styles.spinnerTrack} cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className={styles.spinnerHead} fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {expanded && <span className={styles.loadingText}>Loading...</span>}
+              </div>
+            ) : projects.length === 0 ? (
+              <div className={`${styles.emptyState} ${expanded ? '' : styles.centerIcon}`}>
+                {expanded ? (
+                  <span className={styles.emptyText}>No projects yet</span>
+                ) : (
+                  <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                  </svg>
+                )}
+              </div>
+            ) : (
+              projects.map(project => (
+                <ProjectItem
+                  key={project.id}
+                  project={project}
+                  active={isActive(`/project/${project.id}`)}
+                  expanded={expanded}
+                  onClick={() => navigate(`/project/${project.id}`)}
+                />
+              ))
+            )}
           </div>
         </div>
-        
-        <hr className="hrrr" />
-        
-        <div className="bottom-buttons">
-          <button 
-            id="profile-btn" 
-            className={`profile-btn ${activeButton === "profile-btn" ? "current-btn" : ""}`}
-            onClick={() => navigate('/profile')}
-          >
-            <span className="material-icons-outlined">person</span> 
-            <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Profile</span>
-          </button>
-          
-          <button id="logout-btn" className="logout-btn" onClick={handleLogout}>
-            <span className="material-icons-outlined">logout</span> 
-            <span className="btn-text" style={{ display: isCollapsed ? 'none' : 'inline' }}>Logout</span>
-          </button>
-        </div>        
       </nav>
+
+      {/* Footer / Settings */}
+      <div className={styles.footer}>
+        <NavItem 
+          icon={<svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>}
+          label="Profile"
+          active={isActive('/profile')}
+          expanded={expanded}
+          onClick={() => navigate('/profile')}
+        />
+        <NavItem 
+          icon={<svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>}
+          label="Logout"
+          active={false}
+          expanded={expanded}
+          onClick={handleLogout}
+          customClass={styles.logoutButton}
+        />
+      </div>
+
+      {/* Dark Mode Toggle */}
+      <button 
+        className={styles.darkModeToggle}
+        onClick={toggleDarkMode}
+        title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+        aria-label="Toggle dark mode"
+      >
+        {darkMode ? (
+          <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        ) : (
+          <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        )}
+      </button>
     </div>
   );
 };
+
+// Helper components
+const NavItem = ({ icon, label, active, expanded, onClick, customClass = '' }) => (
+  <button
+    onClick={onClick}
+    className={`${styles.navItem} ${active ? styles.active : ''} ${expanded ? '' : styles.centered} ${customClass}`}
+  >
+    <span className={styles.navIcon}>{icon}</span>
+    {expanded && <span className={styles.navLabel}>{label}</span>}
+  </button>
+);
+
+const ProjectItem = ({ project, active, expanded, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`${styles.projectItem} ${active ? styles.active : ''} ${expanded ? '' : styles.centered}`}
+  >
+    <svg className={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+    </svg>
+    {expanded && (
+      <span className={styles.projectName} title={project.name}>
+        {project.name}
+      </span>
+    )}
+  </button>
+);
 
 export default Sidebar;
