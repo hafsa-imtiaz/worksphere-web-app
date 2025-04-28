@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import '../css/login.css';
-import '../css/toast.css';
+import styles from '../css/login.module.css';
 
 const Login = () => {
   // State for form fields
@@ -103,47 +102,63 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      {/* Toast Container */}
-      <div id="toast-container" className={toast.visible ? 'show' : ''}>
-        {toast.visible && (
-          <div className={`toast ${toast.type}`}>
-            <div className="toast-title">{toast.title}</div>
-            <div className="toast-message">{toast.message}</div>
-          </div>
-        )}
+    <div className={styles.page}>
+      <div className={`${styles.toast} ${styles[toast.type]} ${toast.visible ? styles.show : ''}`}>
+        <div className={styles.toastTitle}>{toast.title}</div>
+        <div>{toast.message}</div>
       </div>
 
-      <div className="container">
-        <div className="left">
-          <h2>Welcome Back users</h2>
-          <p>   </p>
-          <p>We are so excited to have you here. If you have already, Login to your an account to get access to exclusive offers, rewards, and discounts.</p>
-          <Link to="/signup" className="signin-link">Don't have an account? Sign Up.</Link>
+      <div className={styles.container}>
+        <div className={styles.left}>
+          <h2>Welcome Back</h2>
+          <p>
+            We are so excited to have you here. Login to your account 
+            to get access to exclusive offers, rewards, and discounts.
+          </p>
+          <Link 
+            to="/signup" 
+            className={styles.signinButton}
+          >
+            Don't have an account? Sign Up
+          </Link>
         </div>
 
-        <div className="right">
+        <div className={styles.right}>
           <h2>Login</h2>
-          <p id="message" style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>
-          <form id="login-form" onSubmit={handleSubmit}>
-            <input 
-              type="email" 
-              id="email" 
-              placeholder="Email" 
-              value={formData.email} 
-              onChange={handleChange} 
-              required 
+          {errorMessage && (
+            <p className={styles.errorMessage}>{errorMessage}</p>
+          )}
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <input
+              type="email"
+              id="email"
+              placeholder="Email"
+              className={styles.input}
+              value={formData.email}
+              onChange={handleChange}
+              required
             />
-            <input 
-              type="password" 
-              id="password" 
-              placeholder="Password" 
-              value={formData.password} 
-              onChange={handleChange} 
-              required 
+            
+            <input
+              type="password"
+              id="password"
+              placeholder="Password"
+              className={styles.input}
+              value={formData.password}
+              onChange={handleChange}
+              required
             />
-            <button type="submit">Login</button>
-            <Link to="/forgot-password" className="forgot-link">Forgot Password?</Link>
+            
+            <button 
+              type="submit" 
+              className={styles.submitButton}
+            >
+              Login
+            </button>
+            
+            <Link to="/forgot-password" className={styles.forgotLink}>
+              Forgot Password?
+            </Link>
           </form>
         </div>
       </div>
