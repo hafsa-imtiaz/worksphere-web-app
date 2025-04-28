@@ -37,6 +37,29 @@ const Task = ({
     }
   };
 
+  // Function to get member initials
+  const getMemberInitials = (userId) => {
+    const member = getMemberById(userId);
+    if (!member) return '';
+    
+    // Get first letter of first name and last name
+    const nameParts = member.name.split(' ');
+    if (nameParts.length === 1) return nameParts[0][0].toUpperCase();
+    return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+  };
+
+  // Get color based on user ID (consistent color for each user)
+  const getMemberColor = (userId) => {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFC43D', '#7768AE', 
+      '#1D7874', '#F38181', '#6A0572', '#6F9A8D', '#FB8B24'
+    ];
+    
+    // Generate consistent index based on userId
+    const charSum = userId.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return colors[charSum % colors.length];
+  };
+
   return (
     <div
       className={`${styles.task} ${getTaskStyle()}`}
@@ -72,13 +95,14 @@ const Task = ({
           {task.assignedTo.map(userId => {
             const member = getMemberById(userId);
             return member ? (
-              <img
+              <div
                 key={userId}
-                src={member.avatar}
-                alt={member.name}
+                className={styles.initialsCircle}
+                style={{ backgroundColor: getMemberColor(userId) }}
                 title={member.name}
-                className={styles.assigneeAvatar}
-              />
+              >
+                {getMemberInitials(userId)}
+              </div>
             ) : null;
           })}
         </div>

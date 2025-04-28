@@ -116,6 +116,25 @@ const ProjectPage = () => {
   const [draggingTask, setDraggingTask] = useState(false);
   const [draggingBoard, setDraggingBoard] = useState(false);
 
+  // Get member initials
+  const getMemberInitials = (member) => {
+    const nameParts = member.name.split(' ');
+    if (nameParts.length === 1) return nameParts[0][0].toUpperCase();
+    return (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase();
+  };
+
+  // Get color based on user ID (consistent color for each user)
+  const getMemberColor = (userId) => {
+    const colors = [
+      '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFC43D', '#7768AE', 
+      '#1D7874', '#F38181', '#6A0572', '#6F9A8D', '#FB8B24'
+    ];
+    
+    // Generate consistent index based on userId
+    const charSum = userId.split('').reduce((sum, char) => sum + char.charCodeAt(0), 0);
+    return colors[charSum % colors.length];
+  };
+
   // Handle task drag operations
   const handleTaskDragStart = (e, taskIndex, boardId) => {
     dragTaskNode.current = e.target;
@@ -336,13 +355,14 @@ const ProjectPage = () => {
           <div className={styles.memberSection}>
             <div className={styles.memberAvatars}>
               {members.slice(0, 5).map((member) => (
-                <img
+                <div
                   key={member.id}
-                  src={member.avatar}
-                  alt={member.name}
-                  className={styles.memberAvatar}
+                  className={styles.memberInitial}
+                  style={{ backgroundColor: getMemberColor(member.id) }}
                   title={member.name}
-                />
+                >
+                  {getMemberInitials(member)}
+                </div>
               ))}
               {members.length > 5 && (
                 <div className={styles.memberCount}>

@@ -2,9 +2,9 @@ import React from 'react';
 import Task from './task';
 import styles from '../css/kanban.module.css';
 
-const KanbanBoard = ({ 
-  board, 
-  boardIndex, 
+const KanbanBoard = ({
+  board,
+  boardIndex,
   draggingTask,
   draggingBoard,
   dragTask,
@@ -18,7 +18,17 @@ const KanbanBoard = ({
   onAddTask,
   getMemberById
 }) => {
-  // Dynamically get board style based on dragging state
+  // Get board header style based on dragging state
+  const getBoardHeaderStyle = () => {
+    if (draggingBoard && 
+        dragBoard.current && 
+        dragBoard.current.boardIndex === boardIndex) {
+      return styles.boardHeaderDragging;
+    }
+    return "";
+  };
+
+  // Get board style based on dragging state
   const getBoardStyle = () => {
     if (draggingBoard && 
         dragBoard.current && 
@@ -29,36 +39,56 @@ const KanbanBoard = ({
   };
 
   return (
-    <div
+    <div 
       className={`${styles.boardContainer} ${getBoardStyle()}`}
-      draggable
-      onDragStart={(e) => handleBoardDragStart(e, boardIndex)}
-      onDragEnd={handleBoardDragEnd}
       onDragOver={(e) => e.preventDefault()}
       onDragEnter={(e) => {
         e.preventDefault();
-        handleBoardDragEnter(e, boardIndex);
+        if (draggingBoard) {
+          handleBoardDragEnter(e, boardIndex);
+        }
       }}
     >
-      {/* Board Header */}
-      <div className={styles.boardHeader}>
-        <h3 className={styles.boardTitle}>{board.title}</h3>
+      <div 
+        className={`${styles.boardHeader} ${getBoardHeaderStyle()}`}
+        draggable
+        onDragStart={(e) => handleBoardDragStart(e, boardIndex)}
+        onDragEnd={handleBoardDragEnd}
+      >
+        <h3 className={styles.boardTitle}>
+          {board.title}
+        </h3>
         <span className={styles.taskCount}>
-          {board.tasks.length}
+          {board.tasks.length} {board.tasks.length === 1 ? 'task' : 'tasks'}
         </span>
       </div>
-      
-      {/* Tasks Container */}
+
       <div 
-        className={styles.tasksContainer}
+        className={styles.boardContent}
         onDragOver={(e) => e.preventDefault()}
+        onDragEnter={(e) => {
+          e.preventDefault();
+          if (draggingTask && board.tasks.length === 0) {
+            // Handle dropping on empty board
+            handleTaskDragEnter(e, 0, board.id);
+          }
+        }}
       >
-        {board.tasks.map((task, taskIndex) => (
+        {/* Empty state message when no tasks */}
+        {board.tasks.length === 0 && (
+          <div className={styles.emptyBoard}>
+            <p>No tasks yet</p>
+            <p>Drag tasks here or add a new one</p>
+          </div>
+        )}
+
+        {/* Tasks */}
+        {board.tasks.map((task, index) => (
           <Task
             key={task.id}
             task={task}
             boardId={board.id}
-            index={taskIndex}
+            index={index}
             draggingTask={draggingTask}
             dragTask={dragTask}
             handleTaskDragStart={handleTaskDragStart}
@@ -67,13 +97,14 @@ const KanbanBoard = ({
             getMemberById={getMemberById}
           />
         ))}
-        
-        {/* Add Task Button */}
-        <button
+      </div>
+
+      <div className={styles.boardFooter}>
+        <button 
+          className={styles.addTaskButton}
           onClick={() => onAddTask(board.id)}
-          className={styles.addTaskBtn}
         >
-          <span className={styles.plusIcon}>+</span> Add Task
+          <span className={styles.addIcon}>+</span> Add Task
         </button>
       </div>
     </div>
