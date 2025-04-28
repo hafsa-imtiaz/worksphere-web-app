@@ -1,480 +1,303 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Calendar, 
-  Clock, 
-  Search, 
-  ChevronDown, 
-  ChevronRight, 
-  Play, 
-  Pause, 
-  Plus, 
-  Minus, 
-  Columns, 
-  Bell, 
-  User,
-  Check,
-  AlertCircle,
-  AlertTriangle,
-  Info
-} from 'lucide-react';
-import Sidebar from '../components/sidebar';
-import { useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Component imports
+import Header from '../components/header';
+import QuickActions from '../components/dashboard/QuickActions';
+import ProjectsSection from '../components/dashboard/ProjectsSection';
+import UpcomingTasks from '../components/dashboard/UpcomingTasks';
+import CalendarView from '../components/dashboard/CalendarView';
+import FocusTimer from '../components/dashboard/FocusTimer';
+import EmptyState from '../components/dashboard/EmptyState';
+import { DarkModeProvider, useDarkMode } from '../contexts/DarkModeContext';
+
 import styles from '../css/dashboard.module.css';
+import Layout from '../components/ui-essentials/Layout';
 
-const Dashboard = () => {
-  // State variables
-  const [timerMinutes, setTimerMinutes] = useState(30);
-  const [timerRunning, setTimerRunning] = useState(false);
-  const [remainingSeconds, setRemainingSeconds] = useState(30 * 60);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(localStorage.getItem('sidebarCollapsed') === 'true');
-  const [tasks, setTasks] = useState([
-    { 
-      id: 1, 
-      title: "Cleaning up desk", 
-      tag: "Inbox", 
-      tagColor: "blue", 
-      time: "08:20 AM", 
-      completed: false 
-    },
-    { 
-      id: 2, 
-      title: "Client meeting prep", 
-      tag: "Work", 
-      tagColor: "#10B981", 
-      time: "10:20 AM", 
-      completed: false 
-    },
-    { 
-      id: 3, 
-      title: "Small yoga", 
-      tag: "Health", 
-      tagColor: "#EF4444", 
-      time: "02:30 PM", 
-      completed: false 
-    }
-  ]);
-  const [newTaskInput, setNewTaskInput] = useState('');
-  const [selectedCalendarDate, setSelectedCalendarDate] = useState(new Date());
-  const [eventDates, setEventDates] = useState([
-    "2023-12-08", "2023-12-15", "2023-12-22", "2023-12-29"
-  ]);
+const DashboardContent = () => {
+  // Access dark mode from context
+  const { darkMode, toggleDarkMode } = useDarkMode();
+  
+  // Local state for dashboard data
+  const [projects, setProjects] = useState([]);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState('Alex');
+  const [isMobile, setIsMobile] = useState(false);
+  const [isContentVisible, setIsContentVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
-  // User information
-  const [user, setUser] = useState({
-    firstName: '',
-    lastName: ''
-  });
+  // Refs for intersection observer
+  const sectionRefs = {
+    quickActions: useRef(null),
+    projects: useRef(null),
+    tasks: useRef(null),
+    focusTimer: useRef(null),
+    calendar: useRef(null)
+  };
 
-  // Toast notifications
-  const [toasts, setToasts] = useState([]);
-
+  // Set up intersection observer to animate sections as they come into view
   useEffect(() => {
-    // Get user info from localStorage
-    const userId = localStorage.getItem("loggedInUserID") || "";
-    const userEmail = localStorage.getItem("loggedInUser") || "";
-    const firstName = localStorage.getItem("UserFName") || "";
-    const lastName = localStorage.getItem("UserLName") || "";
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1
+    };
 
-    if (!userId) {
-      showToast("User not found! Redirecting to login.", "error");
-      setTimeout(() => {
-        // Redirect to login page using react-router
-        //window.location.href = "/login";
-      }, 2000);
-    }
+    const observerCallback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add(styles.fadeIn);
+        }
+      });
+    };
 
-    setUser({
-      firstName: capitalize(firstName),
-      lastName: capitalize(lastName)
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
+    
+    // Observe all section refs
+    Object.values(sectionRefs).forEach(ref => {
+      if (ref.current) {
+        observer.observe(ref.current);
+      }
     });
 
-    // Initial sidebar state
-    const initialSidebarState = localStorage.getItem('sidebarCollapsed') === 'true';
-    setSidebarCollapsed(initialSidebarState);
-
-    // Listen for sidebar toggle events
-    const handleSidebarToggle = (event) => {
-      setSidebarCollapsed(event.detail.collapsed);
-    };
-
-    window.addEventListener('sidebarToggled', handleSidebarToggle);
-
-    // Cleanup event listener
     return () => {
-      window.removeEventListener('sidebarToggled', handleSidebarToggle);
+      Object.values(sectionRefs).forEach(ref => {
+        if (ref.current) {
+          observer.unobserve(ref.current);
+        }
+      });
     };
+  }, [loading]); // Re-run when loading state changes
+
+  // Check for mobile view
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+      
+      // If mobile, collapse sidebar
+      if (window.innerWidth <= 768) {
+        const event = new CustomEvent('sidebarToggled', { 
+          detail: { expanded: false } 
+        });
+        window.dispatchEvent(event);
+        localStorage.setItem('sidebarExpanded', 'false');
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize(); // Initialize on load
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Timer interval effect
+  // Simulate data fetching
   useEffect(() => {
-    let interval = null;
-    if (timerRunning) {
-      interval = setInterval(() => {
-        setRemainingSeconds(prev => {
-          if (prev <= 1) {
-            clearInterval(interval);
-            setTimerRunning(false);
-            showToast("Focus timer completed!", "success");
-            return 0;
+    const fetchData = () => {
+      setTimeout(() => {
+        setProjects([
+          { 
+            id: 1, 
+            name: 'Website Redesign', 
+            status: 'On Track', 
+            statusColor: '#4CAF50',
+            statusColorRgb: '76, 175, 80',
+            progress: 65, 
+            team: [
+              { initials: 'JD', color: '#3F51B5' },
+              { initials: 'AK', color: '#E91E63' }
+            ],
+            completedTasks: 8,
+            totalTasks: 12
+          },
+          { 
+            id: 2, 
+            name: 'Mobile App Development', 
+            status: 'At Risk', 
+            statusColor: '#FF9800',
+            statusColorRgb: '255, 152, 0',
+            progress: 30, 
+            team: [
+              { initials: 'RB', color: '#9C27B0' },
+              { initials: 'MC', color: '#00BCD4' },
+              { initials: 'TK', color: '#4CAF50' }
+            ],
+            completedTasks: 3,
+            totalTasks: 10
+          },
+          { 
+            id: 3, 
+            name: 'Marketing Campaign', 
+            status: 'On Track', 
+            statusColor: '#4CAF50',
+            statusColorRgb: '76, 175, 80',
+            progress: 80, 
+            team: [
+              { initials: 'SL', color: '#FF5722' },
+              { initials: 'KP', color: '#2196F3' }
+            ],
+            completedTasks: 12,
+            totalTasks: 15
           }
-          return prev - 1;
-        });
+        ]);
+        
+        setTasks([
+          { id: 1, title: 'Finalize homepage design', dueDate: '2025-04-30', priority: 'High', projectId: 1 },
+          { id: 2, title: 'API integration', dueDate: '2025-05-02', priority: 'Medium', projectId: 2 },
+          { id: 3, title: 'User testing feedback review', dueDate: '2025-05-05', priority: 'Low', projectId: 1 },
+          { id: 4, title: 'Content strategy meeting', dueDate: '2025-04-29', priority: 'High', projectId: 3 }
+        ]);
+
+        setLoading(false);
+        setIsContentVisible(true);
+        setRefreshing(false);
       }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timerRunning]);
-
-  // Helper functions
-  const capitalize = (name) => {
-    if (!name) return '';
-    return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-  };
-
-  const showToast = (message, type = 'info') => {
-    const id = Date.now();
-    setToasts(prev => [...prev, { id, message, type }]);
-    
-    // Remove toast after 3 seconds
-    setTimeout(() => {
-      setToasts(prev => prev.filter(toast => toast.id !== id));
-    }, 3000);
-  };
-
-  const toggleTimer = () => {
-    if (timerRunning) {
-      setTimerRunning(false);
-    } else {
-      if (remainingSeconds <= 0) {
-        setRemainingSeconds(timerMinutes * 60);
-      }
-      setTimerRunning(true);
-    }
-  };
-
-  const formatTimerDisplay = () => {
-    if (timerRunning) {
-      const minutes = Math.floor(remainingSeconds / 60);
-      const seconds = remainingSeconds % 60;
-      return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-    } else {
-      return `${timerMinutes} mins`;
-    }
-  };
-
-  const decreaseTimer = () => {
-    if (!timerRunning && timerMinutes > 5) {
-      setTimerMinutes(prev => prev - 5);
-      setRemainingSeconds((timerMinutes - 5) * 60);
-    }
-  };
-
-  const increaseTimer = () => {
-    if (!timerRunning && timerMinutes < 60) {
-      setTimerMinutes(prev => prev + 5);
-      setRemainingSeconds((timerMinutes + 5) * 60);
-    }
-  };
-
-  const toggleTaskCompleted = (taskId) => {
-    setTasks(prev => prev.map(task => {
-      if (task.id === taskId) {
-        const updatedTask = { ...task, completed: !task.completed };
-        if (updatedTask.completed) {
-          showToast("Task completed!", "success");
-        }
-        return updatedTask;
-      }
-      return task;
-    }));
-  };
-
-  const addNewTask = () => {
-    if (newTaskInput.trim() === '') return;
-    
-    // Get current time
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const formattedHours = hours % 12 || 12;
-    const formattedMinutes = minutes.toString().padStart(2, '0');
-    const timeString = `${formattedHours}:${formattedMinutes} ${ampm}`;
-    
-    const newTask = {
-      id: Date.now(),
-      title: newTaskInput,
-      tag: "Inbox",
-      tagColor: "blue",
-      time: timeString,
-      completed: false
     };
+
+    fetchData();
+  }, [refreshing]);
+
+  // Toggle sidebar function for mobile
+  const toggleSidebar = () => {
+    const currentState = localStorage.getItem('sidebarExpanded') !== 'false';
+    const newState = !currentState;
+    localStorage.setItem('sidebarExpanded', newState.toString());
     
-    setTasks(prev => [...prev, newTask]);
-    setNewTaskInput('');
-    showToast("Task added!", "info");
+    // Dispatch event that Layout will listen for
+    const event = new CustomEvent('sidebarToggled', { 
+      detail: { expanded: newState } 
+    });
+    window.dispatchEvent(event);
   };
 
-  const handleTaskInputKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      addNewTask();
-    }
+  // Refresh dashboard data
+  const refreshDashboard = () => {
+    setRefreshing(true);
+    setLoading(true);
+    setIsContentVisible(false);
   };
+
+  // Get appropriate greeting based on time of day
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 18) return "Good Afternoon";
+    return "Good Evening";
+  };
+
+  // Get sidebar state from localStorage
+  const isSidebarExpanded = localStorage.getItem('sidebarExpanded') !== 'false';
 
   return (
-    <div className={styles.appContainer}>
-      {/* Sidebar Component */}
-      <Sidebar />
-      
-      {/* Toast container */}
-      <div className={styles.toastContainer}>
-        {toasts.map(toast => (
-          <div 
-            key={toast.id} 
-            className={`${styles.toast} ${
-              toast.type === 'success' ? styles.successToast : 
-              toast.type === 'error' ? styles.errorToast : 
-              toast.type === 'warning' ? styles.warningToast : 
-              styles.infoToast
-            }`}
+    <div className={`${styles.dashboardContainer} ${darkMode ? styles.darkMode : styles.lightMode}`}>
+      {/* Header */}
+      <Header 
+        greeting={`${getGreeting()}, ${userName} 👋`} 
+        toggleDarkMode={toggleDarkMode} 
+        isDarkMode={darkMode}
+        toggleSidebar={toggleSidebar}
+        isMobile={isMobile}
+        sidebarOpen={isSidebarExpanded}
+        onRefresh={refreshDashboard}
+        isRefreshing={refreshing}
+      />
+
+      {/* Dashboard Layout */}
+      {loading ? (
+        <div className={styles.loading}>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            {toast.type === 'success' && <Check size={18} />}
-            {toast.type === 'error' && <AlertCircle size={18} />}
-            {toast.type === 'warning' && <AlertTriangle size={18} />}
-            {toast.type === 'info' && <Info size={18} />}
-            <div>{toast.message}</div>
-          </div>
-        ))}
-      </div>
-      
-      {/* Main application container */}
-      <div className={`${styles.mainContent} ${sidebarCollapsed ? styles.sidebarCollapsed : ''}`}>
-        {/* Top header with search and user info */}
-        <header className={styles.header}>
-          <div className={styles.searchContainer}>
-            <Search className={styles.searchIcon} size={18} />
-            <input 
-              type="text" 
-              placeholder="Search tasks..." 
-              className={styles.searchInput}
-            />
-          </div>
-          
-          <div className={styles.headerActions}>
-            <button className={styles.analyticsButton}>
-              <Columns size={18} />
-              <span>Analytics</span>
-            </button>
-            
-            <div className={styles.notificationIcon}>
-              <div className={styles.notificationDot}></div>
-              <Bell size={20} />
-            </div>
-            
-            <div className={styles.userIcon}>
-              <User size={20} />
-            </div>
-          </div>
-        </header>
-        
-        {/* Main content area */}
-        <main className={styles.mainArea}>
-          <div className={styles.dashboardGrid}>
-            {/* Left column - 2/3 width */}
-            <div className={styles.leftColumn}>
-              {/* Welcome banner */}
-              <div className={styles.welcomeBanner}>
-                <h1 className={styles.welcomeTitle}>Welcome Back, {user.firstName} {user.lastName}</h1>
-                <p className={styles.welcomeSubtitle}>You have {tasks.filter(task => !task.completed).length} active tasks for today</p>
+            Loading your workspace...
+          </motion.div>
+        </div>
+      ) : (
+        <AnimatePresence>
+          {isContentVisible && (
+            <motion.div 
+              className={styles.dashboardLayout}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {/* Row 1: Full Width - Quick Actions */}
+              <div 
+                ref={sectionRefs.quickActions}
+                className={`${styles.fullWidthRow} ${darkMode ? styles.darkItem : ''} ${styles.interactiveElement}`}
+              >
+                <QuickActions darkMode={darkMode} />
               </div>
-              
-              {/* Upcoming tasks section */}
-              <div className={styles.widget}>
-                <h2 className={styles.widgetTitle}>
-                  <Clock size={20} className={styles.widgetIcon} />
-                  <span>Up next</span>
-                </h2>
-                
-                <div className={styles.upcomingTasks}>
-                  <div className={`${styles.upcomingTask} ${styles.activeTask}`}>
-                    <h3 className={styles.taskTitle}>Design Team Meeting - Discuss new project wireframes</h3>
-                    <div className={styles.taskTime}>
-                      <Clock size={16} />
-                      <span>11:30 AM - 12:00 PM</span>
-                    </div>
-                  </div>
-                  
-                  <div className={styles.upcomingTask}>
-                    <h3 className={styles.taskTitle}>Client Meeting - Review project updates and seek approval</h3>
-                    <div className={styles.taskTime}>
-                      <Clock size={16} />
-                      <span>01:00 PM - 02:00 PM</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Task input section */}
-              <div className={styles.widget}>
-                <div className={styles.taskInputContainer}>
-                  <div className={styles.taskCheckbox}></div>
-                  
-                  <input 
-                    type="text" 
-                    placeholder="Add task for today" 
-                    className={styles.taskInput}
-                    value={newTaskInput}
-                    onChange={(e) => setNewTaskInput(e.target.value)}
-                    onKeyPress={handleTaskInputKeyPress}
-                  />
-                  
-                  <Search size={18} className={styles.taskInputIcon} />
-                </div>
-                
-                <div className={styles.taskInputActions}>
-                  <button className={styles.tagButton}>
-                    <div className={styles.tagDot}></div>
-                    <span>Inbox</span>
-                    <ChevronDown size={16} />
-                  </button>
-                  
-                  <div className={styles.timeOptions}>
-                    <div className={`${styles.timeOption} ${styles.activeTimeOption}`}>
-                      <Clock size={16} />
-                      <span>Now</span>
-                    </div>
-                    
-                    <div className={styles.timeOption}>
-                      <Calendar size={16} />
-                      <span>Tomorrow</span>
-                    </div>
-                    
-                    <div className={styles.timeOption}>
-                      <Calendar size={16} />
-                      <span>Next week</span>
-                    </div>
-                  </div>
-                  
-                  <button className={styles.customButton}>
-                    Custom
-                  </button>
-                </div>
-              </div>
-              
-              {/* Today's task list */}
-              <div className={styles.widget}>
-                <h2 className={styles.widgetTitle}>
-                  <Check size={20} className={styles.completedIcon} />
-                  <span>Today's tasks</span>
-                </h2>
-                
-                <div className={styles.taskList}>
-                  {tasks.map(task => (
-                    <div 
-                      key={task.id} 
-                      className={styles.taskItem}
-                    >
-                      <div className={styles.taskDetails}>
-                        <div 
-                          className={`${styles.taskCheckbox} ${task.completed ? styles.taskCompleted : ''}`}
-                          onClick={() => toggleTaskCompleted(task.id)}
-                        >
-                          {task.completed && <Check size={12} className={styles.checkIcon} />}
-                        </div>
-                        
-                        <div>
-                          <div className={`${styles.taskTitle} ${task.completed ? styles.taskTitleCompleted : ''}`}>
-                            {task.title}
-                          </div>
-                          <div className={styles.taskTag}>
-                            <div 
-                              className={styles.tagDot} 
-                              style={{ backgroundColor: task.tagColor === 'blue' ? '#3B82F6' : task.tagColor }}
-                            ></div>
-                            <span className={styles.tagName}>{task.tag}</span>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className={styles.taskMeta}>
-                        <Clock size={14} />
-                        {task.time}
-                        <ChevronRight size={16} className={styles.taskArrow} />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            {/* Right column - 1/3 width */}
-            <div className={styles.rightColumn}>
-              {/* Calendar widget */}
-              <div className={styles.widget}>
-                <h2 className={styles.widgetTitle}>
-                  <Calendar size={20} className={styles.calendarIcon} />
-                  <span>Calendar</span>
-                </h2>
-                
-                {/* Calendar component would go here */}
-                <div className={styles.calendarPlaceholder}>
-                  <div className={styles.calendarInfo}>Calendar placeholder</div>
-                  <div className={styles.selectedDate}>
-                    {selectedCalendarDate.toLocaleDateString('en-US', { 
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric' 
-                    })}
-                  </div>
-                </div>
-              </div>
-              
-              {/* Focus timer widget */}
-              <div className={styles.widget}>
-                <div className={styles.timerHeader}>
-                  <h2 className={styles.widgetTitle}>
-                    <Clock size={20} className={styles.timerIcon} />
-                    <span>Focus timer</span>
-                  </h2>
-                  <div className={styles.timerList}>
-                    <span>Task List</span>
-                    <ChevronDown size={16} />
-                  </div>
-                </div>
-                
-                <div className={styles.timerControls}>
-                  <button 
-                    className={`${styles.timerButton} ${(timerRunning || timerMinutes <= 5) ? styles.timerButtonDisabled : ''}`}
-                    onClick={decreaseTimer}
-                    disabled={timerRunning || timerMinutes <= 5}
-                  >
-                    <Minus size={20} />
-                  </button>
-                  
-                  <div className={styles.timerDisplay}>{formatTimerDisplay()}</div>
-                  
-                  <button 
-                    className={`${styles.timerButton} ${(timerRunning || timerMinutes >= 60) ? styles.timerButtonDisabled : ''}`}
-                    onClick={increaseTimer}
-                    disabled={timerRunning || timerMinutes >= 60}
-                  >
-                    <Plus size={20} />
-                  </button>
-                </div>
-                
-                <button 
-                  className={`${styles.startButton} ${timerRunning ? styles.pauseButton : ''}`}
-                  onClick={toggleTimer}
+
+              {/* Row 2: Two Equal Columns */}
+              <div className={styles.twoColumnRow}>
+                <div 
+                  ref={sectionRefs.projects}
+                  className={`${styles.columnItem} ${darkMode ? styles.darkItem : ''}`}
                 >
-                  {timerRunning ? <Pause size={18} /> : <Play size={18} />}
-                  <span>{timerRunning ? 'Pause' : 'Start Focus'}</span>
-                </button>
+                  {projects && projects.length > 0 ? (
+                    <ProjectsSection projects={projects} darkMode={darkMode} />
+                  ) : (
+                    <EmptyState 
+                      type="projects"
+                      message="No projects yet" 
+                      actionLabel="Create your first project"
+                      darkMode={darkMode}
+                    />
+                  )}
+                </div>
+
+                <div 
+                  ref={sectionRefs.tasks}
+                  className={`${styles.columnItem} ${darkMode ? styles.darkItem : ''}`}
+                >
+                  {tasks && tasks.length > 0 ? (
+                    <UpcomingTasks tasks={tasks} darkMode={darkMode} />
+                  ) : (
+                    <EmptyState 
+                      type="tasks"
+                      message="No upcoming tasks" 
+                      actionLabel="Add a task"
+                      darkMode={darkMode}
+                    />
+                  )}
+                </div>
               </div>
-            </div>
-          </div>
-        </main>
-      </div>
+
+              {/* Row 3: Focus Timer (2/3) and Calendar (1/3) */}
+              <div className={styles.twoColumnRow}>
+                <div 
+                  ref={sectionRefs.focusTimer}
+                  className={`${styles.columnItem} ${styles.timerContainer} ${darkMode ? styles.darkItem : ''}`}
+                  style={{ flex: 2 }} /* Give focus timer 2x the space */
+                >
+                  <FocusTimer />
+                </div>
+
+                <div 
+                  ref={sectionRefs.calendar}
+                  className={`${styles.columnItem} ${styles.calendarContainer} ${darkMode ? styles.darkItem : ''}`}
+                  style={{ flex: 1 }} /* Give calendar 1x the space */
+                >
+                  <CalendarView tasks={tasks || []} darkMode={darkMode} />
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
     </div>
+  );
+};
+
+// Wrapper component that provides the DarkModeContext
+const Dashboard = () => {
+  return (
+    <Layout>
+      <DashboardContent />
+    </Layout>
   );
 };
 
