@@ -5,6 +5,9 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import ScrollToTop from './components/ScrollToTop';
 import Dashboard from './pages/dashboard';
+import MyCalendar from './pages/MyCalendar.js'
+import { DarkModeProvider } from './contexts/DarkModeContext';
+import Project from './pages/project';
 
 function App() {
   return (
