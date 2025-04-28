@@ -68,6 +68,9 @@ const CalendarContent = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [animating, setAnimating] = useState(false);
   const [filterBy, setFilterBy] = useState('all');
+  const [isMobile, setIsMobile] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const isSidebarExpanded = localStorage.getItem('sidebarExpanded') !== 'false';
   
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -181,7 +184,9 @@ const CalendarContent = () => {
 
   return (
     <div className={`${styles.taskCalendar} ${darkMode ? styles.darkMode : ''}`}>
-      <Header/>
+      <Header 
+        greeting={"My Calendar"} 
+      />
       
       <div className={styles.calendarHeader}>
         <div className={styles.calendarTitle}>

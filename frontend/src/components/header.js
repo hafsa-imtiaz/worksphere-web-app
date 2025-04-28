@@ -4,6 +4,7 @@ import { Menu, Moon, Sun, Bell, Search, Settings, User, LogOut, ChevronDown } fr
 import styles from '../css/header.module.css';
 import { useDarkMode } from '../contexts/DarkModeContext';
 import defaultpfp from '../assets/profile-pfp/default-pfp.jpeg';
+import { useNavigate } from 'react-router-dom';
 
 const Header = ({ 
   greeting, 
@@ -14,6 +15,8 @@ const Header = ({
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+
+  const navigate = useNavigate();
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -31,6 +34,21 @@ const Header = ({
 
   const toggleProfileDropdown = () => {
     setProfileDropdownOpen(!profileDropdownOpen);
+  };
+
+  // Navigation handlers
+  const handleNavigateToProfile = () => {
+    navigate('/profile#profile');
+    setProfileDropdownOpen(false);
+  };
+
+  const handleNavigateToSettings = () => {
+    navigate('/profile#settings');
+    setProfileDropdownOpen(false);
+  };
+
+  const handleNavigateToInbox = () => {
+    navigate('/inbox');
   };
 
   // Mock logout function
@@ -73,13 +91,13 @@ const Header = ({
         </div>
         
         {/* Notifications */}
-        <button className={styles.iconButton} aria-label="Notifications">
+        <button className={styles.iconButton} aria-label="Notifications" onClick={handleNavigateToInbox}>
           <div className={styles.notificationIndicator}></div>
           <Bell size={20} />
         </button>
         
         {/* Settings */}
-        <button className={styles.iconButton} aria-label="Settings">
+        <button className={styles.iconButton} aria-label="Settings" onClick={handleNavigateToSettings}>
           <Settings size={20} />
         </button>
         
@@ -103,7 +121,7 @@ const Header = ({
             onClick={toggleProfileDropdown}
           >
             <img 
-              src= {defaultpfp} 
+              src={defaultpfp} 
               alt="User profile" 
               className={styles.avatar}
             />
@@ -135,13 +153,13 @@ const Header = ({
                 
                 <ul className={styles.dropdownMenu}>
                   <li>
-                    <button className={styles.dropdownItem}>
+                    <button className={styles.dropdownItem} onClick={handleNavigateToProfile}>
                       <User size={16} />
                       <span>My Profile</span>
                     </button>
                   </li>
                   <li>
-                    <button className={styles.dropdownItem}>
+                    <button className={styles.dropdownItem} onClick={handleNavigateToSettings}>
                       <Settings size={16} />
                       <span>Account Settings</span>
                     </button>
