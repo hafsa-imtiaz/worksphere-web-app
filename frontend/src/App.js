@@ -3,13 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/landing';
 import Login from './pages/login';
 import Signup from './pages/signup';
-import UserSettings from './pages/settings';
-import ProjectManagement from './pages/project';
 import ScrollToTop from './components/ScrollToTop';
 import Dashboard from './pages/dashboard';
 import MyCalendar from './pages/MyCalendar.js'
 import { DarkModeProvider } from './contexts/DarkModeContext';
-import Project from './pages/project';
+import Project from './pages/project1.js';
 
 function App() {
   return (
