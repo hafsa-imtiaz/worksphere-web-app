@@ -86,7 +86,7 @@ const Login = () => {
 
         // Redirect based on user type
         setTimeout(() => {
-          navigate(user.userType === "ADMIN" ? "/admin" : "/login/dashboard");
+          navigate(user.userType === "ADMIN" ? "/admin" : "/dashboard");
         }, 2000);
 
       } else {

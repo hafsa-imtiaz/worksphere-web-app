@@ -32,7 +32,7 @@ const Sidebar = () => {
       "/calendar": "calendar-btn",
       "/inbox": "inbox-btn",
       "/profile": "profile-btn",
-      "/new-project": "add-project"
+      "/project": "add-project"
     };
 
     return sidebarRoutes[path] || "";

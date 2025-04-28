@@ -5,6 +5,7 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import ScrollToTop from './components/ScrollToTop';
 import Dashboard from './pages/dashboard';
+import Project from './pages/project';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/project" element={<Project />} />
       </Routes>
     </Router>
   );

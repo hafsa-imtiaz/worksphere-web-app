@@ -1,0 +1,247 @@
+
+
+/* Project Page Styles */
+.projectPage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f9f5ff; /* Light purple background */
+}
+
+/* Project Header Styles */
+.projectHeader {
+  padding: 1rem;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.projectHeaderContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.projectTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #5b21b6; /* Dark purple */
+  margin-bottom: 0.25rem;
+}
+
+.projectDescription {
+  color: #6b7280; /* Medium gray */
+}
+
+.memberSection {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.memberAvatars {
+  display: flex;
+  margin-right: 0.5rem;
+}
+
+.memberAvatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -0.5rem;
+}
+
+.memberAvatar:first-child {
+  margin-left: 0;
+}
+
+.memberCount {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background-color: #e9d5ff; /* Light purple */
+  color: #5b21b6; /* Dark purple */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 2px solid white;
+  margin-left: -0.5rem;
+}
+
+.addMemberBtn {
+  padding: 0.5rem 0.75rem;
+  background-color: #f3e8ff; /* Very light purple */
+  color: #7e22ce; /* Medium purple */
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.addMemberBtn:hover {
+  background-color: #e9d5ff; /* Light purple */
+}
+
+/* Kanban Container Styles */
+.kanbanContainer {
+  flex: 1;
+  padding: 1rem;
+  overflow-x: auto;
+}
+
+.boardsWrapper {
+  display: flex;
+  height: 100%;
+  gap: 1rem;
+}
+
+/* Add Board Controls */
+.addBoardContainer {
+  width: 18rem;
+}
+
+.addBoardBtn {
+  padding: 0.75rem;
+  height: 3rem;
+  background-color: #f3e8ff; /* Very light purple */
+  color: #7c3aed; /* Bright purple */
+  border: none;
+  border-radius: 0.375rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.addBoardBtn:hover {
+  background-color: #e9d5ff; /* Light purple */
+}
+
+.addBoardForm {
+  padding: 0.75rem;
+  background-color: white;
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.boardTitleInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #e9d5ff; /* Light purple */
+  border-radius: 0.375rem;
+  margin-bottom: 0.5rem;
+  outline: none;
+}
+
+.boardTitleInput:focus {
+  outline: none;
+  border-color: #a78bfa; /* Medium purple */
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.25);
+}
+
+/* Modal Styles */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+}
+
+.modal {
+  background-color: white;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  width: 24rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.modalTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #5b21b6; /* Dark purple */
+  margin-bottom: 1rem;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  display: block;
+  color: #4b5563; /* Dark gray */
+  margin-bottom: 0.5rem;
+}
+
+.formInput, .formSelect, .formTextarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db; /* Light gray */
+  border-radius: 0.375rem;
+  outline: none;
+}
+
+.formInput:focus, .formSelect:focus, .formTextarea:focus {
+  outline: none;
+  border-color: #a78bfa; /* Medium purple */
+  box-shadow: 0 0 0 2px rgba(167, 139, 250, 0.25);
+}
+
+.formSelect[multiple] {
+  height: auto;
+}
+
+.helpText {
+  font-size: 0.75rem;
+  color: #6b7280; /* Medium gray */
+  margin-top: 0.25rem;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.cancelBtn {
+  padding: 0.5rem 1rem;
+  background-color: #f3f4f6; /* Light gray */
+  color: #4b5563; /* Dark gray */
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.cancelBtn:hover {
+  background-color: #e5e7eb; /* Medium light gray */
+}
+
+.confirmBtn {
+  padding: 0.5rem 1rem;
+  background-color: #7c3aed; /* Bright purple */
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.confirmBtn:hover {
+  background-color: #6d28d9; /* Darker purple */
+}
+
+.plusIcon {
+  margin-right: 0.25rem;
+}
