@@ -10,7 +10,7 @@ import { DarkModeProvider } from './contexts/DarkModeContext';
 import Project from './pages/project.js'
 import UserProfile from './pages/UserSettings.js';
 import Inbox from './pages/Inbox.js';
-import MyTasks from './pages/MyTask.js';
+import MyTasks from './pages/mytask.js';
 
 function App() {
   return (
