@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import KanbanBoard from '../components/kanban';
+import ProjectAnalytics from '../components/projectAnalytics';
 import styles from '../css/project.module.css';
 import Sidebar from '../components/sidebar';
 
@@ -379,6 +380,9 @@ const ProjectPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Project Analytics */}
+      <ProjectAnalytics project={project} members={members} />
 
       {/* Main Kanban Board Content */}
       <div className={styles.kanbanContainer}>
