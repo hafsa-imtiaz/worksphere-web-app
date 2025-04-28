@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import styles from '../css/home/landing.module.css';
-import finalImage from '../assets/decor/landing1.png';
+import styles from '../../css/home/landing.module.css';
+import finalImage from '../../assets/decor/landing1.png';
 
 const LandingPage = () => {
   const [menuActive, setMenuActive] = useState(false);
