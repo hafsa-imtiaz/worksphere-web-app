@@ -7,7 +7,8 @@ import ScrollToTop from './components/ScrollToTop';
 import Dashboard from './pages/dashboard';
 import MyCalendar from './pages/MyCalendar.js'
 import { DarkModeProvider } from './contexts/DarkModeContext';
-import Project from './pages/project1.js';
+import Project from './pages/project.js';
+import UserSettings from './pages/settings.js';
 
 function App() {
   return (

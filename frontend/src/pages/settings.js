@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, User, Lock, Palette, Moon, Sun, Monitor, ChevronRight, Upload } from 'lucide-react';
-import "../css/settings.css";
+
 
 export default function UserSettings() {
   const [activeTab, setActiveTab] = useState('security');
