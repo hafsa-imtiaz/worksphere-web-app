@@ -305,14 +305,8 @@ const InboxContent = () => {
     <div className={`${styles.inboxContainer} ${darkMode ? styles.darkMode : styles.lightMode}`}>
       {/* Header */}
       <Header 
-        title="Inbox" 
-        toggleDarkMode={toggleDarkMode} 
-        isDarkMode={darkMode}
+        greeting={"Inbox"} 
         toggleSidebar={toggleSidebar}
-        isMobile={isMobile}
-        sidebarOpen={isSidebarExpanded}
-        onRefresh={refreshInbox}
-        isRefreshing={refreshing}
       />
 
       {/* Inbox Layout */}
