@@ -5,8 +5,6 @@ import Login from './pages/login';
 import Signup from './pages/signup';
 import ScrollToTop from './components/ScrollToTop';
 import Dashboard from './pages/dashboard';
-import MyCalendar from './pages/MyCalendar.js'
-import { DarkModeProvider } from './contexts/DarkModeContext';
 
 function App() {
   return (
@@ -17,7 +15,6 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/calendar" element={<MyCalendar />} />
       </Routes>
     </Router>
   );
