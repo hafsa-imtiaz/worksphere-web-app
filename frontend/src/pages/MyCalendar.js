@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from '../components/ui-essentials/Layout';
 import Header from '../components/header';
-import { Calendar, ChevronLeft, ChevronRight, List, Grid, Clock, Tag, MoreHorizontal, Filter, ChevronDown } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, List, Grid, Clock, Tag, MoreHorizontal, Filter } from 'lucide-react';
 import styles from '../css/mycalendar.module.css';
 import { DarkModeProvider, useDarkMode } from '../contexts/DarkModeContext';
 
@@ -68,9 +68,6 @@ const CalendarContent = () => {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [animating, setAnimating] = useState(false);
   const [filterBy, setFilterBy] = useState('all');
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-  
-  const filterRef = useRef(null);
   
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -83,20 +80,6 @@ const CalendarContent = () => {
   ];
   
   const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  
-  // Close filter dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (filterRef.current && !filterRef.current.contains(event.target)) {
-        setIsFilterOpen(false);
-      }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
   
   const handlePrevMonth = () => {
     setAnimating(true);
@@ -120,15 +103,6 @@ const CalendarContent = () => {
       setViewMode(mode);
       setAnimating(false);
     }, 300);
-  };
-  
-  const toggleFilterDropdown = () => {
-    setIsFilterOpen(!isFilterOpen);
-  };
-  
-  const handleFilterSelect = (filter) => {
-    setFilterBy(filter);
-    setIsFilterOpen(false);
   };
 
   // Filter tasks based on current filter
@@ -154,7 +128,7 @@ const CalendarContent = () => {
   // Get tasks for a specific day
   const getTasksForDay = (day) => {
     if (!day) return [];
-    const formattedDate = ${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')};
+    const formattedDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     return filteredTasks.filter(task => task.date === formattedDate);
   };
 
@@ -171,7 +145,7 @@ const CalendarContent = () => {
   // Group tasks by month for list view
   const groupedTasks = sortedTasks.reduce((acc, task) => {
     const date = new Date(task.date);
-    const monthYear = ${monthNames[date.getMonth()]} ${date.getFullYear()};
+    const monthYear = `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
     
     if (!acc[monthYear]) {
       acc[monthYear] = [];
@@ -184,7 +158,7 @@ const CalendarContent = () => {
   // Get formatted date
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return ${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()};
+    return `${monthNames[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
   };
 
   // Get days remaining
@@ -198,26 +172,15 @@ const CalendarContent = () => {
     
     if (diffDays === 0) return 'Today';
     if (diffDays === 1) return 'Tomorrow';
-    if (diffDays < 0) return ${Math.abs(diffDays)} days ago;
-    return ${diffDays} days remaining;
+    if (diffDays < 0) return `${Math.abs(diffDays)} days ago`;
+    return `${diffDays} days remaining`;
   };
 
   // Get unique projects for filtering
   const projects = [...new Set(tasksData.map(task => task.project))];
 
-  // Get filter name
-  const getFilterName = () => {
-    switch(filterBy) {
-      case 'all': return 'All Tasks';
-      case 'high': return 'High Priority';
-      case 'inProgress': return 'In Progress';
-      case 'upcoming': return 'Upcoming';
-      default: return 'All Tasks';
-    }
-  };
-
   return (
-    <div className={${styles.taskCalendar} ${darkMode ? styles.darkMode : ''}}>
+    <div className={`${styles.taskCalendar} ${darkMode ? styles.darkMode : ''}`}>
       <Header/>
       
       <div className={styles.calendarHeader}>
@@ -226,54 +189,30 @@ const CalendarContent = () => {
           <h1>Task Calendar</h1>
         </div>
         <div className={styles.headerControls}>
-          <div className={styles.filterDropdown} ref={filterRef}>
-            <button 
-              className={${styles.filterButton} ${isFilterOpen ? styles.active : ''}} 
-              onClick={toggleFilterDropdown} 
-              aria-expanded={isFilterOpen}
-              aria-label="Filter tasks"
-            >
+          <div className={styles.filterDropdown}>
+            <button className={styles.filterButton}>
               <Filter size={16} />
-              <span>{getFilterName()}</span>
-              <ChevronDown size={16} className={${styles.dropdownArrow} ${isFilterOpen ? styles.rotate : ''}} />
+              <span>Filter</span>
             </button>
-            {isFilterOpen && (
-              <div className={styles.filterMenu} role="menu">
-                <div 
-                  className={styles.filterOption} 
-                  onClick={() => handleFilterSelect('all')}
-                  role="menuitem"
-                >
-                  <span className={filterBy === 'all' ? styles.activeFilter : ''}>All Tasks</span>
-                </div>
-                <div 
-                  className={styles.filterOption} 
-                  onClick={() => handleFilterSelect('high')}
-                  role="menuitem"
-                >
-                  <span className={filterBy === 'high' ? styles.activeFilter : ''}>High Priority</span>
-                </div>
-                <div 
-                  className={styles.filterOption} 
-                  onClick={() => handleFilterSelect('inProgress')}
-                  role="menuitem"
-                >
-                  <span className={filterBy === 'inProgress' ? styles.activeFilter : ''}>In Progress</span>
-                </div>
-                <div 
-                  className={styles.filterOption} 
-                  onClick={() => handleFilterSelect('upcoming')}
-                  role="menuitem"
-                >
-                  <span className={filterBy === 'upcoming' ? styles.activeFilter : ''}>Upcoming</span>
-                </div>
+            <div className={styles.filterMenu}>
+              <div className={styles.filterOption} onClick={() => setFilterBy('all')}>
+                <span className={filterBy === 'all' ? styles.activeFilter : ''}>All Tasks</span>
               </div>
-            )}
+              <div className={styles.filterOption} onClick={() => setFilterBy('high')}>
+                <span className={filterBy === 'high' ? styles.activeFilter : ''}>High Priority</span>
+              </div>
+              <div className={styles.filterOption} onClick={() => setFilterBy('inProgress')}>
+                <span className={filterBy === 'inProgress' ? styles.activeFilter : ''}>In Progress</span>
+              </div>
+              <div className={styles.filterOption} onClick={() => setFilterBy('upcoming')}>
+                <span className={filterBy === 'upcoming' ? styles.activeFilter : ''}>Upcoming</span>
+              </div>
+            </div>
           </div>
           <div className={styles.viewToggle}>
             <button 
               onClick={() => toggleView('calendar')} 
-              className={${styles.toggleBtn} ${viewMode === 'calendar' ? styles.active : ''}}
+              className={`${styles.toggleBtn} ${viewMode === 'calendar' ? styles.active : ''}`}
               aria-label="Calendar View"
             >
               <Grid size={20} />
@@ -281,7 +220,7 @@ const CalendarContent = () => {
             </button>
             <button 
               onClick={() => toggleView('list')} 
-              className={${styles.toggleBtn} ${viewMode === 'list' ? styles.active : ''}}
+              className={`${styles.toggleBtn} ${viewMode === 'list' ? styles.active : ''}`}
               aria-label="List View"
             >
               <List size={20} />
@@ -291,7 +230,7 @@ const CalendarContent = () => {
         </div>
       </div>
 
-      <div className={${styles.calendarContent} ${animating ? styles.fadeOut : styles.fadeIn}}>
+      <div className={`${styles.calendarContent} ${animating ? styles.fadeOut : styles.fadeIn}`}>
         {viewMode === 'calendar' ? (
           <div className={styles.calendarView}>
             <div className={styles.monthNavigation}>
@@ -321,7 +260,7 @@ const CalendarContent = () => {
                   return (
                     <div 
                       key={index} 
-                      className={${styles.calendarDay} ${!day.isCurrentMonth ? styles.otherMonth : ''} ${isTodayClass}}
+                      className={`${styles.calendarDay} ${!day.isCurrentMonth ? styles.otherMonth : ''} ${isTodayClass}`}
                     >
                       {day.day && (
                         <>
@@ -330,13 +269,13 @@ const CalendarContent = () => {
                             {dayTasks.map(task => (
                               <div 
                                 key={task.id} 
-                                className={${styles.taskItem} ${projectColors[task.project]} ${statusClasses[task.status]}}
+                                className={`${styles.taskItem} ${projectColors[task.project]} ${statusClasses[task.status]}`}
                                 title={task.title}
                               >
                                 <span className={styles.taskTitle}>{task.title}</span>
                                 <div className={styles.taskMeta}>
                                   <span className={styles.taskProject}>{task.project}</span>
-                                  <span className={${styles.taskPriority} ${priorityClasses[task.priority]}}></span>
+                                  <span className={`${styles.taskPriority} ${priorityClasses[task.priority]}`}></span>
                                 </div>
                               </div>
                             ))}
@@ -365,7 +304,7 @@ const CalendarContent = () => {
                         const taskDate = new Date(task.date);
                         return (
                           <div key={task.id} className={styles.taskListItem}>
-                            <div className={${styles.taskDate} ${projectColors[task.project]}}>
+                            <div className={`${styles.taskDate} ${projectColors[task.project]}`}>
                               <span className={styles.dateDay}>{taskDate.getDate()}</span>
                               <span className={styles.dateMonth}>{monthNames[taskDate.getMonth()].substring(0, 3)}</span>
                             </div>
@@ -377,7 +316,7 @@ const CalendarContent = () => {
                                   {task.project}
                                 </span>
                                 <span className={styles.taskStatus}>
-                                  <span className={${styles.statusDot} ${statusClasses[task.status]}}></span>
+                                  <span className={`${styles.statusDot} ${statusClasses[task.status]}`}></span>
                                   {task.status}
                                 </span>
                                 <span className={styles.taskCountdown}>
@@ -386,7 +325,7 @@ const CalendarContent = () => {
                                 </span>
                               </div>
                             </div>
-                            <div className={${styles.taskPriorityFlag} ${priorityClasses[task.priority]}}>
+                            <div className={`${styles.taskPriorityFlag} ${priorityClasses[task.priority]}`}>
                               {task.priority}
                             </div>
                             <button className={styles.taskMoreBtn}>
@@ -415,7 +354,7 @@ const CalendarContent = () => {
           <div className={styles.summaryList}>
             {currentMonthTasks.map(task => (
               <div key={task.id} className={styles.summaryItem}>
-                <div className={${styles.summaryIndicator} ${projectColors[task.project]}}></div>
+                <div className={`${styles.summaryIndicator} ${projectColors[task.project]}`}></div>
                 <div className={styles.summaryContent}>
                   <div className={styles.summaryTitle}>{task.title}</div>
                   <div className={styles.summaryDetails}>
@@ -424,11 +363,11 @@ const CalendarContent = () => {
                   </div>
                 </div>
                 <div className={styles.summaryStatus}>
-                  <span className={${styles.statusBadge} ${getDaysRemaining(task.date) === 'Today' ? styles.urgent : ''}}>
+                  <span className={`${styles.statusBadge} ${getDaysRemaining(task.date) === 'Today' ? styles.urgent : ''}`}>
                     {getDaysRemaining(task.date)}
                   </span>
                 </div>
-                <div className={${styles.summaryPriority} ${priorityClasses[task.priority]}}>
+                <div className={`${styles.summaryPriority} ${priorityClasses[task.priority]}`}>
                   {task.priority}
                 </div>
               </div>
