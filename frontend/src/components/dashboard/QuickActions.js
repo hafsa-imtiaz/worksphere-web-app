@@ -1,35 +1,42 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MdAdd, MdAssignment, MdFavorite, MdHistory, MdArrowForward } from 'react-icons/md';
 import styles from '../../css/dashboard/QuickActions.module.css';
 
 const QuickActions = () => {
+  const navigate = useNavigate();
   const [hoveredAction, setHoveredAction] = useState(null);
   const [activeAction, setActiveAction] = useState(null);
+
+  // Navigation functions
+  const goToCreateProject = () => {
+    navigate('/create/project');
+  };
 
   const actions = [
     { 
       icon: <MdAdd size={24} />, 
       label: 'New Project', 
       color: '#3b82f6',
-      onClick: () => console.log('New Project clicked') 
+      onClick: goToCreateProject  // Use the navigation function
     },
     { 
       icon: <MdAssignment size={24} />, 
       label: 'My Work', 
       color: '#10b981',
-      onClick: () => console.log('Create Task clicked') 
+      onClick: () => navigate('/tasks')
     },
     { 
       icon: <MdFavorite size={24} />, 
       label: 'Inbox', 
       color: '#f59e0b',
-      onClick: () => console.log('Favorites clicked') 
+      onClick: () => navigate('/inbox')
     },
     { 
       icon: <MdHistory size={24} />, 
       label: 'Deadlines', 
       color: '#8b5cf6',
-      onClick: () => console.log('Recent clicked') 
+      onClick: () => navigate('/calendar')
     }
   ];
 
