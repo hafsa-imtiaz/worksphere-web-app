@@ -102,6 +102,17 @@ If Maven is not installed, use:
 ```
 The backend should now be running on `http://localhost:8080`.
 
+
+### Run the Frontend:
+```sh
+cd frontend
+```
+Now run this command:
+```sh
+npm start
+```
+The frontenfd should now be running on `http://localhost:3000`.
+
 ---
 
 ## 5. Run the Frontend
@@ -129,14 +140,28 @@ The frontend is located in `src/main/resources/static`.
 - Verify the MySQL database contains the necessary tables.
 
 ---
+## 7. PPT slides
+https://www.canva.com/design/DAGmRuAM47I/Jsl7piBqG6nuL_rc3uEKtA/view?utm_content=DAGmRuAM47I&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h9ca240c4c4
 
-## 7. Contributors
+---
+---
+## 8. Final Documentation
+[https://worksphere-web-app.vercel.app/](https://docs.google.com/document/d/1mn8YLrMoIJG2qtYdLBLq-pzzQ0rYPXRqWuhSFG7_KE4/edit?usp=sharing)
+
+---
+
+## 9. Deployment Link
+https://worksphere-web-app.vercel.app/
+
+---
+
+## 10. Contributors
 - Hafsa Imtiaz
 - Areen Zainab
 - Mahum Hamid
 
 ---
 
-## 8. License
+## 11. License
 This project is licensed under the [MIT License](LICENSE).
 
